@@ -1,0 +1,17 @@
+{
+  "name": "tonejs",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "esbuild index.js --bundle --outfile=out.js --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "tone": "^14.7.77"
+  },
+  "devDependencies": {
+    "esbuild": "0.19.4"
+  }
+}
