@@ -1,26 +1,8 @@
 import * as Tone from "tone";
 import { choose, deepChoose, randomArray } from "./utils";
 
-const polySynth = new Tone.PolySynth(Tone.Synth, {
-  volume: -25,
-  oscillator: {
-    baseType: "sine",
-    partialCount: 10,
-    partials: randomArray(10, true)
-  },
-  envelope: {
-    attackCurve: "exponential",
-    attack: 0.01,
-    decay: 0.3,
-    sustain: 0.95,
-    release: 5,
-    releaseCurve: "exponential"
-  }
-}).toDestination();
-
 const notePool = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"];
-const seq = [getNextNote()];
-console.log(seq);
+const seq = [{ note: getNextNote(), pan: getNextPan() }];
 
 let currIdx = 0;
 let lastAdditionIdx = 0;
@@ -43,15 +25,39 @@ document.querySelector("#stop")?.addEventListener("click", async () => {
 });
 
 function setup() {
+  const masterChannel = new Tone.Channel({ channelCount: 2 });
+  masterChannel.toDestination();
+
   const loop = new Tone.Loop((time) => {
     if (seq[currIdx]) {
-      polySynth.triggerAttackRelease(seq[currIdx], "16n", time, Math.random());
+      const synth = new Tone.Synth({
+        volume: -25,
+        oscillator: {
+          baseType: "sine",
+          partialCount: 10,
+          partials: randomArray(10, true)
+        },
+        envelope: {
+          attackCurve: "exponential",
+          attack: 0.01,
+          decay: 0.3,
+          sustain: 0.95,
+          release: 5,
+          releaseCurve: "exponential"
+        }
+      });
+      const panner = new Tone.Panner(seq[currIdx].pan).connect(masterChannel);
+      synth.connect(panner);
+      synth.triggerAttackRelease(seq[currIdx].note, "16n", time);
     }
     currIdx = (currIdx + 1) % 10;
     if (currIdx === 0) {
       if (numReps === 0) {
         const additionIdx = (lastAdditionIdx + 7) % 10;
-        seq[additionIdx] = getNextNote(seq[lastAdditionIdx]);
+        seq[additionIdx] = {
+          note: getNextNote(seq[lastAdditionIdx].note),
+          pan: getNextPan()
+        };
         lastAdditionIdx = additionIdx;
         numReps = choose([1, 2, 3]);
       } else {
@@ -61,22 +67,35 @@ function setup() {
   }, "8n").start(0);
   Tone.Transport.bpm = 90;
 
-  const meter = new Tone.Meter();
-  polySynth.connect(meter);
+  const meter = [new Tone.Meter(), new Tone.Meter()];
+  const split = new Tone.Split();
+  masterChannel.connect(split);
+  split.connect(meter[0], 0, 0);
+  split.connect(meter[1], 1, 0);
+
   const canvas = document.querySelector("#meter");
   const context = canvas.getContext("2d");
 
-  const drawVolume = () => {
-    const dbs = meter.getValue();
-    const amps = Math.pow(Tone.dbToGain(dbs), 0.5) * 100;
-    context.clearRect(0, 0, canvas.width, canvas.height);
-    context.beginPath();
-    context.arc(100, 100, amps, 0, 2 * Math.PI);
-    context.stroke();
-    window.requestAnimationFrame(drawVolume);
+  const drawVolume = (dbs, x = 100) => {
+    const amps = Math.pow(Tone.dbToGain(dbs), 0.5) * 200;
+    context.fillStyle = `rgb(255,0,0)`;
+    context.fillRect(x, canvas.height - amps, 100, amps);
+    context.fillStyle = `rgb(0,0)`;
+    context.fillText(amps, x + 50, 50);
   };
 
-  drawVolume();
+  const updateMeter = () => {
+    const dbs = meter.map((m) => m.getValue());
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.fillStyle = `rgb(0,0,255,0.25)`;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    drawVolume(dbs[0], 75);
+    drawVolume(dbs[1], 225);
+
+    window.requestAnimationFrame(updateMeter);
+  };
+
+  updateMeter();
 }
 
 function getNextNote(prevNote) {
@@ -96,4 +115,9 @@ function getNextNote(prevNote) {
     console.log(chroma + prevOctave);
     return chroma + prevOctave;
   }
+}
+
+function getNextPan(centroidBias = 1) {
+  const pan = -1 + Math.pow(Math.random(), centroidBias) * 2;
+  return pan;
 }
