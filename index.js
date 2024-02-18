@@ -4,10 +4,9 @@ import { choose, deepChoose, randomArray } from "./utils";
 /////////////// sequence state //////////////////
 
 const notePool = ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"];
-const seq = [{ note: getNextNote(), pan: getNextPan() }];
-
-let currIdx = 0;
-let lastAdditionIdx = 0;
+let seq;
+let currIdx;
+let lastAdditionIdx;
 let numReps = 3;
 
 //////////////// tonejs globals //////////////////
@@ -24,6 +23,10 @@ document.querySelector("#start-audio").addEventListener("click", () => {
 });
 
 document.querySelector("#start")?.addEventListener("click", async () => {
+  seq = new Array(10);
+  seq[0] = { note: getNextNote(), pan: getNextPan() };
+  currIdx = 0;
+  lastAdditionIdx = 0;
   Tone.Transport.start();
 });
 
@@ -79,31 +82,14 @@ function setupMeter() {
 
 function loop(time) {
   if (seq[currIdx]) {
-    const synth = new Tone.Synth({
-      volume: -25,
-      oscillator: {
-        baseType: "sine",
-        partialCount: 10,
-        partials: randomArray(10, true)
-      },
-      envelope: {
-        attackCurve: "exponential",
-        attack: 0.01,
-        decay: 0.3,
-        sustain: 0.95,
-        release: 5,
-        releaseCurve: "exponential"
-      }
-    });
-    const panner = new Tone.Panner(seq[currIdx].pan).connect(masterChannel);
-    synth.connect(panner);
-    synth.triggerAttackRelease(seq[currIdx].note, "16n", time);
+    playCurrentNote(seq[currIdx], time);
   }
-  currIdx = (currIdx + 1) % 10;
+
+  currIdx = (currIdx + 1) % seq.length;
   if (currIdx === 0) {
     console.log(numReps);
     if (numReps === 0) {
-      const additionIdx = (lastAdditionIdx + 7) % 10;
+      const additionIdx = (lastAdditionIdx + 7) % seq.length;
       const note = getNextNote(seq[lastAdditionIdx]?.note);
       seq[additionIdx] = note
         ? {
@@ -117,6 +103,28 @@ function loop(time) {
       numReps -= 1;
     }
   }
+}
+
+function playCurrentNote(note, time) {
+  const synth = new Tone.Synth({
+    volume: -25,
+    oscillator: {
+      baseType: "sine",
+      partialCount: 10,
+      partials: randomArray(10, true)
+    },
+    envelope: {
+      attackCurve: "exponential",
+      attack: 0.01,
+      decay: 0.3,
+      sustain: 0.95,
+      release: 5,
+      releaseCurve: "exponential"
+    }
+  });
+  const panner = new Tone.Panner(note.pan).connect(masterChannel);
+  synth.connect(panner);
+  synth.triggerAttackRelease(note.note, "16n", time);
 }
 
 function getNextNote(prevNote) {
