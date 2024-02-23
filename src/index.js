@@ -1,6 +1,9 @@
 import * as Tone from "tone";
 import { choose, deepChoose, randomArray } from "./utils";
 
+// hot reload
+new EventSource("/esbuild").addEventListener("change", () => location.reload());
+
 /////////////// global state //////////////////
 
 let seq;

@@ -4,7 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "esbuild index.js --bundle --outfile=out.js --watch"
+    "clean": "rm -r www/js || exit 0",
+    "build": "npm run clean && esbuild src/index.js --sourcemap  --outdir=www/js --bundle",
+    "dev": "esbuild && esbuild src/index.js --sourcemap  --outdir=www/js --servedir=www --bundle --watch"
   },
   "author": "",
   "license": "ISC",
