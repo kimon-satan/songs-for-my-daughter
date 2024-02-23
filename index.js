@@ -1,5 +1,6 @@
 import * as Tone from "tone";
 import { choose, deepChoose, randomArray } from "./utils";
+import { Instrument } from "tone/build/esm/instrument/Instrument";
 
 /////////////// global state //////////////////
 
@@ -100,6 +101,7 @@ function loop(time) {
 }
 
 function playCurrentNote(note, time) {
+  const panner = new Tone.Panner(note.pan).connect(masterChannel);
   const synth = new Tone.Synth({
     volume: -25,
     oscillator: {
@@ -114,9 +116,12 @@ function playCurrentNote(note, time) {
       sustain: 0.95,
       release: 5,
       releaseCurve: "exponential"
+    },
+    onsilence: (instrument) => {
+      instrument.dispose();
+      panner.dispose();
     }
   });
-  const panner = new Tone.Panner(note.pan).connect(masterChannel);
   synth.connect(panner);
   synth.triggerAttackRelease(note.note, "16n", time);
 }
