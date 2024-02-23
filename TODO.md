@@ -1,3 +1,9 @@
-[] Double tempo of loop and make sequence fill with double spacing
-[] Organise sequence state
+[] Make inits a little more sophisticated
+[] lastBeat calculations
+[] variable start and end points
+
+[] Selectable states for testing
+[] Source map for debugger
+[] Test suite
+
 [] Experiment with sections of double tempo

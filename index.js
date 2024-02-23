@@ -255,8 +255,6 @@ function reduceSequence(_currentTransformState) {
 
   const notesRemaining = seq.reduce((prev, curr) => prev + (curr ? 1 : 0), 0);
 
-  console.log(notesRemaining);
-
   if (notesRemaining === 3) {
     _transformState.isComplete = true;
   }
@@ -267,7 +265,6 @@ function reduceSequence(_currentTransformState) {
       seq[beat] = undefined;
       _transformState.lastSubtractionOnBeat = beat;
       _transformState.cyclesUntilNextAction = choose([1, 2, 3]);
-      console.log(seq);
     } else {
       _transformState.cyclesUntilNextAction -= 1;
     }
