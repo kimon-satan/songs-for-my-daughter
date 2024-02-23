@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { deepChoose, choose } from "./utils";
+import { deepChoose } from "./utils";
 
 //////////////////////////////// Transforms /////////////////////////////
 
@@ -20,29 +20,24 @@ export function fillSequence({ _seq, _transformState }) {
 
   _transformStateCopy.isComplete = _transformState.notePool.length === 0;
 
-  if (_transformStateCopy.cyclesUntilNextAction === 0) {
-    const beat = (_transformStateCopy.lastAdditionOnBeat + 14) % _seq.length;
-    const [chroma, notePool] = getNextChroma(_transformStateCopy);
-    _transformStateCopy.notePool = notePool;
-    const [octave, isAscending] = getNextOctave({
-      chroma,
-      _transformState: _transformStateCopy,
-      _seq: _seqCopy
-    });
-    _transformStateCopy.isAscending = isAscending;
+  const beat = (_transformStateCopy.lastAdditionOnBeat + 14) % _seq.length;
+  const [chroma, notePool] = getNextChroma(_transformStateCopy);
+  _transformStateCopy.notePool = notePool;
+  const [octave, isAscending] = getNextOctave({
+    chroma,
+    _transformState: _transformStateCopy,
+    _seq: _seqCopy
+  });
+  _transformStateCopy.isAscending = isAscending;
 
-    if (chroma && octave) {
-      const note = chroma + octave;
-      _seqCopy[beat] = {
-        note,
-        pan: getNextPan()
-      };
-    }
-    _transformStateCopy.lastAdditionOnBeat = beat;
-    _transformStateCopy.cyclesUntilNextAction = choose([1]);
-  } else {
-    _transformStateCopy.cyclesUntilNextAction -= 1;
+  if (chroma && octave) {
+    const note = chroma + octave;
+    _seqCopy[beat] = {
+      note,
+      pan: getNextPan()
+    };
   }
+  _transformStateCopy.lastAdditionOnBeat = beat;
 
   return { _transformState: _transformStateCopy, _seq: _seqCopy };
 }
@@ -52,7 +47,7 @@ export function fillSequence({ _seq, _transformState }) {
 function getNextChroma(_currentTransformState) {
   const { notePool } = _currentTransformState;
   if (notePool.length === 0) {
-    return undefined;
+    return [undefined, notePool];
   }
   const notePoolCopy = [...notePool];
   return [deepChoose(notePoolCopy), notePoolCopy];
@@ -75,7 +70,7 @@ function getNextOctave({ chroma, _transformState, _seq }) {
     ) {
       currOctave += 1;
     }
-    return [Math.min(currOctave, 6), currOctave < 6];
+    return [Math.min(currOctave, 6), currOctave <= 6];
   } else {
     if (
       Tone.Frequency(chroma + currOctave).toMidi() >
@@ -83,7 +78,7 @@ function getNextOctave({ chroma, _transformState, _seq }) {
     ) {
       currOctave -= 1;
     }
-    return [Math.max(currOctave, 3), currOctave > 3];
+    return [Math.max(currOctave, 3), currOctave >= 2];
   }
 }
 
@@ -109,17 +104,12 @@ export function reduceSequence({ _transformState, _seq }) {
 
   const notesRemaining = _seq.reduce((prev, curr) => prev + (curr ? 1 : 0), 0);
 
+  const beat = (_transformStateCopy.lastSubtractionOnBeat + 14) % _seq.length;
+  _seqCopy[beat] = undefined;
+  _transformStateCopy.lastSubtractionOnBeat = beat;
+
   if (notesRemaining === 3) {
     _transformStateCopy.isComplete = true;
-  }
-
-  if (_transformStateCopy.cyclesUntilNextAction === 0) {
-    const beat = (_transformStateCopy.lastSubtractionOnBeat + 14) % _seq.length;
-    _seqCopy[beat] = undefined;
-    _transformStateCopy.lastSubtractionOnBeat = beat;
-    _transformStateCopy.cyclesUntilNextAction = choose([1, 2, 3]);
-  } else {
-    _transformStateCopy.cyclesUntilNextAction -= 1;
   }
 
   return { _transformState: _transformStateCopy, _seq: _seqCopy };

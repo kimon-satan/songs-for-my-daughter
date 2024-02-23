@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { randomArray } from "./utils";
+import { randomArray, choose } from "./utils";
 import {
   initFillSequence,
   fillSequence,
@@ -108,13 +108,17 @@ function loop(time) {
   currentTransformState = getNextTransform(currentTransformState);
 
   if (playbackBeat === 0) {
-    const { _seq, _transformState } = applyTransforms({
-      _transformState: currentTransformState,
-      _seq: seq
-    });
-    console.log(_seq);
-    seq = _seq;
-    currentTransformState = _transformState;
+    if (currentTransformState.cyclesUntilNextAction === 0) {
+      const { _seq, _transformState } = applyTransforms({
+        _transformState: currentTransformState,
+        _seq: seq
+      });
+      seq = _seq;
+      _transformState.cyclesUntilNextAction = choose([1, 2, 3]);
+      currentTransformState = _transformState;
+    } else {
+      currentTransformState.cyclesUntilNextAction -= 1;
+    }
   }
 
   playbackBeat = (playbackBeat + 1) % seq.length;
