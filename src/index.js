@@ -1,5 +1,11 @@
 import * as Tone from "tone";
-import { choose, deepChoose, randomArray } from "./utils";
+import { randomArray } from "./utils";
+import {
+  initFillSequence,
+  fillSequence,
+  initReduceSequence,
+  reduceSequence
+} from "./transforms";
 
 // hot reload
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
@@ -98,7 +104,19 @@ function loop(time) {
   if (seq[playbackBeat]) {
     playCurrentNote(seq[playbackBeat], time);
   }
-  currentTransformState = applyTransforms(currentTransformState);
+
+  currentTransformState = getNextTransform(currentTransformState);
+
+  if (playbackBeat === 0) {
+    const { _seq, _transformState } = applyTransforms({
+      _transformState: currentTransformState,
+      _seq: seq
+    });
+    console.log(_seq);
+    seq = _seq;
+    currentTransformState = _transformState;
+  }
+
   playbackBeat = (playbackBeat + 1) % seq.length;
 }
 
@@ -130,27 +148,30 @@ function playCurrentNote(note, time) {
 
 ////////////////////////////////
 
-function applyTransforms(_currentTransformState) {
-  let _transformState = _currentTransformState
-    ? { ..._currentTransformState }
-    : initFillSequence();
+function getNextTransform(_transformState) {
+  if (!_transformState) {
+    return initFillSequence();
+  }
 
   if (_transformState.isComplete) {
-    _transformState = chooseTransform(_transformState);
-  } else {
-    switch (_transformState.transform) {
-      case "fill-sequence":
-        _transformState = fillSequence(_transformState);
-        break;
-      case "reduce-sequence":
-        _transformState = reduceSequence(_transformState);
-        break;
-      default:
-        throw new Error("transform not found");
-    }
+    return chooseTransform(_transformState);
   }
 
   return _transformState;
+}
+
+function applyTransforms({ _transformState, _seq }) {
+  switch (_transformState.transform) {
+    case "fill-sequence":
+      return fillSequence({
+        _transformState,
+        _seq
+      });
+    case "reduce-sequence":
+      return reduceSequence({ _transformState, _seq });
+    default:
+      throw new Error("transform not found");
+  }
 }
 
 function chooseTransform(_transformState) {
@@ -159,118 +180,4 @@ function chooseTransform(_transformState) {
   } else {
     return initFillSequence();
   }
-}
-
-//////////////////////////////// Transforms /////////////////////////////
-
-function initFillSequence() {
-  return {
-    transform: "fill-sequence",
-    notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
-    lastAdditionOnBeat: 0,
-    cyclesUntilNextAction: 3,
-    isAscending: true,
-    isComplete: false
-  };
-}
-
-function fillSequence(_currentTransformState) {
-  const _transformState = { ..._currentTransformState };
-  _transformState.isComplete = _transformState.notePool.length === 0;
-
-  if (playbackBeat === 0) {
-    if (_transformState.cyclesUntilNextAction === 0) {
-      const beat = (_transformState.lastAdditionOnBeat + 14) % seq.length;
-      const chroma = getNextChroma(_transformState);
-      const [octave, isAscending] = getNextOctave(chroma, _transformState);
-      _transformState.isAscending = isAscending;
-      const note = chroma + octave;
-
-      if (note) {
-        seq[beat] = {
-          note,
-          pan: getNextPan()
-        };
-      }
-      _transformState.lastAdditionOnBeat = beat;
-      _transformState.cyclesUntilNextAction = choose([1]);
-    } else {
-      _transformState.cyclesUntilNextAction -= 1;
-    }
-  }
-
-  return _transformState;
-}
-
-function getNextChroma(_currentTransformState) {
-  const { notePool, lastAdditionOnBeat = 0 } = _currentTransformState;
-  if (notePool.length === 0) {
-    return undefined;
-  }
-  return deepChoose(notePool);
-}
-
-function getNextOctave(chroma, _currentTransformState) {
-  const { lastAdditionOnBeat, isAscending } = _currentTransformState;
-  const prevNote = seq[lastAdditionOnBeat].note;
-
-  if (!prevNote) {
-    return 3;
-  }
-
-  let currOctave = Number(prevNote.substring(prevNote.length - 1));
-
-  if (isAscending) {
-    if (
-      Tone.Frequency(chroma + currOctave).toMidi() <
-      Tone.Frequency(prevNote).toMidi()
-    ) {
-      currOctave += 1;
-    }
-    return [Math.min(currOctave, 6), currOctave < 6];
-  } else {
-    if (
-      Tone.Frequency(chroma + currOctave).toMidi() >
-      Tone.Frequency(prevNote).toMidi()
-    ) {
-      currOctave -= 1;
-    }
-    return [Math.max(currOctave, 3), currOctave > 3];
-  }
-}
-
-function getNextPan(_currentTransformState, centroidBias = 1) {
-  const pan = -1 + Math.pow(Math.random(), centroidBias) * 2;
-  return pan;
-}
-
-function initReduceSequence() {
-  return {
-    transform: "reduce-sequence",
-    lastSubtractionOnBeat: 0,
-    cyclesUntilNextAction: 3,
-    isComplete: false
-  };
-}
-
-function reduceSequence(_currentTransformState) {
-  let _transformState = { ..._currentTransformState };
-
-  const notesRemaining = seq.reduce((prev, curr) => prev + (curr ? 1 : 0), 0);
-
-  if (notesRemaining === 3) {
-    _transformState.isComplete = true;
-  }
-
-  if (playbackBeat === 0) {
-    if (_transformState.cyclesUntilNextAction === 0) {
-      const beat = (_transformState.lastSubtractionOnBeat + 14) % seq.length;
-      seq[beat] = undefined;
-      _transformState.lastSubtractionOnBeat = beat;
-      _transformState.cyclesUntilNextAction = choose([1, 2, 3]);
-    } else {
-      _transformState.cyclesUntilNextAction -= 1;
-    }
-  }
-  return _transformState;
 }
