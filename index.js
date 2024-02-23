@@ -1,6 +1,5 @@
 import * as Tone from "tone";
 import { choose, deepChoose, randomArray } from "./utils";
-import { Instrument } from "tone/build/esm/instrument/Instrument";
 
 /////////////// global state //////////////////
 
@@ -134,7 +133,6 @@ function applyTransforms(_currentTransformState) {
     : initFillSequence();
 
   if (_transformState.isComplete) {
-    console.log(_transformState);
     _transformState = chooseTransform(_transformState);
   } else {
     switch (_transformState.transform) {
@@ -165,9 +163,10 @@ function chooseTransform(_transformState) {
 function initFillSequence() {
   return {
     transform: "fill-sequence",
-    notePool: ["A", "B", "C", "D", "E", "F", "G", "A", "F#", "C#"],
+    notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
     lastAdditionOnBeat: 0,
     cyclesUntilNextAction: 3,
+    isAscending: true,
     isComplete: false
   };
 }
@@ -179,7 +178,10 @@ function fillSequence(_currentTransformState) {
   if (playbackBeat === 0) {
     if (_transformState.cyclesUntilNextAction === 0) {
       const beat = (_transformState.lastAdditionOnBeat + 14) % seq.length;
-      const note = getNextNote(_transformState);
+      const chroma = getNextChroma(_transformState);
+      const [octave, isAscending] = getNextOctave(chroma, _transformState);
+      _transformState.isAscending = isAscending;
+      const note = chroma + octave;
 
       if (note) {
         seq[beat] = {
@@ -197,23 +199,40 @@ function fillSequence(_currentTransformState) {
   return _transformState;
 }
 
-function getNextNote(_currentTransformState) {
+function getNextChroma(_currentTransformState) {
   const { notePool, lastAdditionOnBeat = 0 } = _currentTransformState;
+  if (notePool.length === 0) {
+    return undefined;
+  }
+  return deepChoose(notePool);
+}
+
+function getNextOctave(chroma, _currentTransformState) {
+  const { lastAdditionOnBeat, isAscending } = _currentTransformState;
   const prevNote = seq[lastAdditionOnBeat].note;
 
-  if (notePool.length === 0) return undefined;
-  const chroma = deepChoose(notePool);
-  if (!prevNote) return chroma + 3;
+  if (!prevNote) {
+    return 3;
+  }
 
-  const prevOctave = Number(prevNote.substring(prevNote.length - 1));
+  let currOctave = Number(prevNote.substring(prevNote.length - 1));
 
-  if (
-    Tone.Frequency(chroma + prevOctave).toMidi() <
-    Tone.Frequency(prevNote).toMidi()
-  ) {
-    return chroma + Math.min(prevOctave + 1, 6);
+  if (isAscending) {
+    if (
+      Tone.Frequency(chroma + currOctave).toMidi() <
+      Tone.Frequency(prevNote).toMidi()
+    ) {
+      currOctave += 1;
+    }
+    return [Math.min(currOctave, 6), currOctave < 6];
   } else {
-    return chroma + prevOctave;
+    if (
+      Tone.Frequency(chroma + currOctave).toMidi() >
+      Tone.Frequency(prevNote).toMidi()
+    ) {
+      currOctave -= 1;
+    }
+    return [Math.max(currOctave, 3), currOctave > 3];
   }
 }
 
