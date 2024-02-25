@@ -32,7 +32,7 @@ export function getNextOctave({ chroma, prevNote, isAscending }) {
     ) {
       currOctave -= 1;
     }
-    return [Math.max(currOctave, 3), currOctave >= 2];
+    return [Math.max(currOctave, 2), currOctave <= 2];
   }
 }
 

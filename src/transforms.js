@@ -1,6 +1,17 @@
 import { getNoteAtIndex } from "./utils";
 import { getNextChroma, getNextOctave, getNextPan } from "./pickers";
 
+export const transforms = {
+  fillSequence: {
+    init: initFillSequence,
+    transform: fillSequence
+  },
+  reduceSequence: {
+    init: initReduceSequence,
+    transform: reduceSequence
+  }
+};
+
 export function initFillSequence() {
   return {
     transform: "fill-sequence",

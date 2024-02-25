@@ -4,7 +4,8 @@ import {
   initFillSequence,
   fillSequence,
   initReduceSequence,
-  reduceSequence
+  reduceSequence,
+  transforms
 } from "./transforms";
 
 import { sequenceFixtures } from "./sequence.fixtures";
@@ -31,6 +32,13 @@ Object.keys(sequenceFixtures).forEach((k) => {
   document.querySelector("#sequence").appendChild(elem);
 });
 
+Object.keys(transforms).forEach((k) => {
+  const elem = document.createElement(`option`);
+  elem.value = k;
+  elem.innerHTML = k;
+  document.querySelector("#transform").appendChild(elem);
+});
+
 document.querySelector("#start-audio").addEventListener("click", () => {
   setup();
   const matches = document.querySelectorAll(".control-button");
@@ -40,7 +48,6 @@ document.querySelector("#start-audio").addEventListener("click", () => {
 
 document.querySelector("#start")?.addEventListener("click", async () => {
   playbackBeat = 0;
-  currentTransformState = null;
 
   const s = document.querySelector("#sequence").value;
 
@@ -54,6 +61,14 @@ document.querySelector("#start")?.addEventListener("click", async () => {
     };
   }
 
+  const t = document.querySelector("#transform").value;
+
+  if (transforms[t]) {
+    currentTransformState = transforms[t].init();
+  } else {
+    currentTransformState = null;
+  }
+
   Tone.Transport.start();
 });
 
@@ -64,6 +79,12 @@ document.querySelector("#stop")?.addEventListener("click", async () => {
 document.querySelector("#sequence")?.addEventListener("change", (event) => {
   if (sequenceFixtures[event.target.value]) {
     seq = sequenceFixtures[event.target.value]();
+  }
+});
+
+document.querySelector("#transform")?.addEventListener("change", (event) => {
+  if (transforms[event.target.value]) {
+    currentTransformState = transforms[event.target.value].init();
   }
 });
 

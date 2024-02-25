@@ -41,5 +41,17 @@ export const sequenceFixtures = {
       };
     }
     return _seq;
+  },
+
+  aFewHighBeats: () => {
+    const _seq = new Array(20);
+
+    for (let i = 0; i < 3; i++) {
+      _seq[i * 6] = {
+        note: choose(chroma) + 6,
+        pan: -1 + Math.random() * 2
+      };
+    }
+    return _seq;
   }
 };
