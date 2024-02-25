@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "clean": "rm -r www/js || exit 0",
-    "build": "npm run clean && esbuild src/index.js --sourcemap  --outdir=www/js --bundle",
+    "build": "npm run clean && esbuild src/index.js --sourcemap  --outdir=www/js --minify --bundle",
     "dev": "esbuild && esbuild src/index.js --sourcemap  --outdir=www/js --servedir=www --bundle --watch",
     "test": "vitest"
   },

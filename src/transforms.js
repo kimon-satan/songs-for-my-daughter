@@ -1,5 +1,9 @@
 import { getNoteAtIndex } from "./utils";
-import { getNextChroma, getNextOctave, getNextPan } from "./pickers";
+import {
+  pickChromaFromNotePool,
+  pickOctaveDirectional,
+  pickPanRandom
+} from "./pickers";
 
 export const transforms = {
   fillSequence: {
@@ -30,9 +34,9 @@ export function fillSequence({ _seq, _transformState }) {
   _transformStateCopy.isComplete = _transformState.notePool.length === 0;
 
   const beat = (_transformStateCopy.lastAdditionOnBeat + 14) % _seq.length;
-  const [chroma, notePool] = getNextChroma(_transformState.notePool);
+  const [chroma, notePool] = pickChromaFromNotePool(_transformState.notePool);
   _transformStateCopy.notePool = notePool;
-  const [octave, isAscending] = getNextOctave({
+  const [octave, isAscending] = pickOctaveDirectional({
     chroma,
     prevNote: getNoteAtIndex({
       _seq,
@@ -46,7 +50,7 @@ export function fillSequence({ _seq, _transformState }) {
     const note = chroma + octave;
     _seqCopy[beat] = {
       note,
-      pan: getNextPan()
+      pan: pickPanRandom()
     };
   }
   _transformStateCopy.lastAdditionOnBeat = beat;

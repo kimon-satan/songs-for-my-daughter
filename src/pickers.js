@@ -2,7 +2,7 @@ import * as Tone from "tone";
 
 import { deepChoose, getOctaveFromNote } from "./utils";
 
-export function getNextChroma(notePool) {
+export function pickChromaFromNotePool(notePool) {
   if (notePool.length === 0) {
     return [undefined, notePool];
   }
@@ -10,7 +10,7 @@ export function getNextChroma(notePool) {
   return [deepChoose(notePoolCopy), notePoolCopy];
 }
 
-export function getNextOctave({ chroma, prevNote, isAscending }) {
+export function pickOctaveDirectional({ chroma, prevNote, isAscending }) {
   if (!prevNote) {
     return [3, true];
   }
@@ -36,7 +36,7 @@ export function getNextOctave({ chroma, prevNote, isAscending }) {
   }
 }
 
-export function getNextPan(_currentTransformState, centroidBias = 1) {
+export function pickPanRandom(centroidBias = 1) {
   const pan = -1 + Math.pow(Math.random(), centroidBias) * 2;
   return pan;
 }
