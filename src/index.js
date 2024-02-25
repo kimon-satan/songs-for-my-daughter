@@ -62,9 +62,19 @@ document.querySelector("#start")?.addEventListener("click", async () => {
   }
 
   const t = document.querySelector("#transform").value;
+  const raw_args = document.querySelector("#transform-args").value;
+
+  const parsed_args = (() => {
+    try {
+      return JSON.parse(raw_args);
+    } catch (e) {
+      console.log(e);
+      return null;
+    }
+  })();
 
   if (transforms[t]) {
-    currentTransformState = transforms[t].init({ _seq: seq });
+    currentTransformState = transforms[t].init({ _seq: seq, ...parsed_args });
   } else {
     currentTransformState = null;
   }

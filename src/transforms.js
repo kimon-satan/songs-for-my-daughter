@@ -16,7 +16,7 @@ export const transforms = {
   }
 };
 
-export function initActivateBeatsModulo({ _seq }) {
+export function initActivateBeatsModulo({ _seq, ...args }) {
   return {
     transform: "fill-sequence",
     notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
@@ -26,17 +26,18 @@ export function initActivateBeatsModulo({ _seq }) {
     isComplete: false,
     modulo: 14,
     maxBeats: 10,
-    maxReps: 10
+    maxReps: 10,
+    ...args
   };
 }
 
 function getModuloBeat({ _transformState, _seq }) {
-  if (_transformState.visited.length === 0) {
-    return getFirstActiveBeat(_seq) || 0;
-  }
-  return (
-    (_transformState.visited.at(-1) + _transformState.modulo) % _seq.length
-  );
+  const ref =
+    _transformState.visited.length === 0
+      ? getFirstActiveBeat(_seq) || 0
+      : _transformState.visited.at(-1);
+
+  return (ref + _transformState.modulo) % _seq.length;
 }
 
 export function activateBeatsModulo({ _seq, _transformState }) {
@@ -82,12 +83,13 @@ export function activateBeatsModulo({ _seq, _transformState }) {
 
 //////////////////////////// Silence Beats Modulo ////////////////////////////
 
-export function initSilenceBeatsModulo({ _seq }) {
+export function initSilenceBeatsModulo({ _seq, ...args }) {
   return {
     transform: "reduce-sequence",
     lastSubtractionOnBeat: getFirstActiveBeat(_seq) ?? 0,
     cyclesUntilNextAction: 3,
-    isComplete: false
+    isComplete: false,
+    ...args
   };
 }
 
