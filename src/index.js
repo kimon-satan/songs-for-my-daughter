@@ -7,6 +7,8 @@ import {
   reduceSequence
 } from "./transforms";
 
+import { sequenceFixtures } from "./sequence.fixtures";
+
 // hot reload
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
 
@@ -22,6 +24,13 @@ let masterChannel;
 
 //////////////// UI ////////////////
 
+Object.keys(sequenceFixtures).forEach((k) => {
+  const elem = document.createElement(`option`);
+  elem.value = k;
+  elem.innerHTML = k;
+  document.querySelector("#sequence").appendChild(elem);
+});
+
 document.querySelector("#start-audio").addEventListener("click", () => {
   setup();
   const matches = document.querySelectorAll(".control-button");
@@ -32,16 +41,30 @@ document.querySelector("#start-audio").addEventListener("click", () => {
 document.querySelector("#start")?.addEventListener("click", async () => {
   playbackBeat = 0;
   currentTransformState = null;
-  seq = new Array(20);
-  seq[0] = {
-    note: "A3",
-    pan: 0
-  };
+
+  const s = document.querySelector("#sequence").value;
+
+  if (sequenceFixtures[s]) {
+    seq = sequenceFixtures[s]();
+  } else {
+    seq = new Array(20);
+    seq[0] = {
+      note: "A3",
+      pan: 0
+    };
+  }
+
   Tone.Transport.start();
 });
 
 document.querySelector("#stop")?.addEventListener("click", async () => {
   Tone.Transport.stop();
+});
+
+document.querySelector("#sequence")?.addEventListener("change", (event) => {
+  if (sequenceFixtures[event.target.value]) {
+    seq = sequenceFixtures[event.target.value]();
+  }
 });
 
 ///////////////////////// Setup //////////////////////////
@@ -86,9 +109,15 @@ function setupMeter() {
 
     if (currentTransformState) {
       context.fillText(
-        `${currentTransformState.cyclesUntilNextAction}`,
+        `cycles until next action: ${currentTransformState.cyclesUntilNextAction}`,
         0,
         100
+      );
+
+      context.fillText(
+        `isAscending: ${currentTransformState.isAscending}`,
+        0,
+        120
       );
     }
 

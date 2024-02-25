@@ -15,9 +15,17 @@
         padding: 0.5rem;
       }
 
-      .controls {
+      .control-column {
         display: flex;
         flex-direction: column;
+        align-items: start;
+        gap: 0.5rem;
+        padding: 0.5rem;
+      }
+
+      .control-row {
+        display: flex;
+        flex-direction: row;
         align-items: start;
         gap: 0.5rem;
         padding: 0.5rem;
@@ -27,10 +35,28 @@
   <body>
     <div class="container">
       <h1>Songs for my daughter</h1>
-      <div class="controls">
-        <button id="start-audio">Start Audio Engine</button>
-        <button class="control-button" id="start" disabled>Start</button>
-        <button class="control-button" id="stop" disabled>Stop</button>
+      <div class="control-row">
+        <div class="control-column">
+          <button id="start-audio">Start Audio Engine</button>
+          <button class="control-button" id="start" disabled>Start</button>
+          <button class="control-button" id="stop" disabled>Stop</button>
+        </div>
+
+        <div class="control-column">
+          <label>
+            Switch to sequence:
+            <select name="sequence" id="sequence">
+              <option value="none">none</option>
+            </select>
+          </label>
+
+          <label>
+            Switch to transform:
+            <select name="transform" id="transform">
+              <option value="none">none</option>
+            </select>
+          </label>
+        </div>
 
         <script src="js/index.js"></script>
       </div>

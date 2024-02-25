@@ -1,7 +1,5 @@
-import * as Tone from "tone";
-import { deepChoose, getNoteAtIndex, getOctaveFromNote } from "./utils";
-
-//////////////////////////////// Transforms /////////////////////////////
+import { getNoteAtIndex } from "./utils";
+import { getNextChroma, getNextOctave, getNextPan } from "./pickers";
 
 export function initFillSequence() {
   return {
@@ -21,7 +19,7 @@ export function fillSequence({ _seq, _transformState }) {
   _transformStateCopy.isComplete = _transformState.notePool.length === 0;
 
   const beat = (_transformStateCopy.lastAdditionOnBeat + 14) % _seq.length;
-  const [chroma, notePool] = getNextChroma(_transformStateCopy);
+  const [chroma, notePool] = getNextChroma(_transformState.notePool);
   _transformStateCopy.notePool = notePool;
   const [octave, isAscending] = getNextOctave({
     chroma,
@@ -43,46 +41,6 @@ export function fillSequence({ _seq, _transformState }) {
   _transformStateCopy.lastAdditionOnBeat = beat;
 
   return { _transformState: _transformStateCopy, _seq: _seqCopy };
-}
-
-/////////////////// fill sequence helpers /////////////////////
-
-function getNextChroma(_currentTransformState) {
-  const { notePool } = _currentTransformState;
-  if (notePool.length === 0) {
-    return [undefined, notePool];
-  }
-  const notePoolCopy = [...notePool];
-  return [deepChoose(notePoolCopy), notePoolCopy];
-}
-
-export function getNextOctave({ chroma, prevNote, isAscending }) {
-  if (!prevNote) {
-    return [3, true];
-  }
-
-  if (isAscending) {
-    if (
-      Tone.Frequency(chroma + getOctaveFromNote(prevNote)).toMidi() <
-      Tone.Frequency(prevNote).toMidi()
-    ) {
-      currOctave += 1;
-    }
-    return [Math.min(currOctave, 6), currOctave <= 6];
-  } else {
-    if (
-      Tone.Frequency(chroma + currOctave).toMidi() >
-      Tone.Frequency(prevNote).toMidi()
-    ) {
-      currOctave -= 1;
-    }
-    return [Math.max(currOctave, 3), currOctave >= 2];
-  }
-}
-
-function getNextPan(_currentTransformState, centroidBias = 1) {
-  const pan = -1 + Math.pow(Math.random(), centroidBias) * 2;
-  return pan;
 }
 
 //////////////////////////// Reduce sequence
