@@ -1,10 +1,10 @@
 import * as Tone from "tone";
 import { randomArray, choose } from "./utils";
 import {
-  initFillSequence,
-  fillSequence,
-  initReduceSequence,
-  reduceSequence,
+  initActivateBeatsModulo,
+  activateBeatsModulo,
+  initSilenceBeatsModulo,
+  silenceBeatsModulo,
   transforms
 } from "./transforms";
 
@@ -207,7 +207,7 @@ function playCurrentNote(note, time) {
 
 function getNextTransform({ _transformState, _seq }) {
   if (!_transformState) {
-    return initFillSequence({ _seq });
+    return initActivateBeatsModulo({ _seq });
   }
 
   if (_transformState.isComplete) {
@@ -220,12 +220,12 @@ function getNextTransform({ _transformState, _seq }) {
 function applyTransforms({ _transformState, _seq }) {
   switch (_transformState.transform) {
     case "fill-sequence":
-      return fillSequence({
+      return activateBeatsModulo({
         _transformState,
         _seq
       });
     case "reduce-sequence":
-      return reduceSequence({ _transformState, _seq });
+      return silenceBeatsModulo({ _transformState, _seq });
     default:
       throw new Error("transform not found");
   }
@@ -233,8 +233,8 @@ function applyTransforms({ _transformState, _seq }) {
 
 function chooseTransform({ _transformState, _seq }) {
   if (_transformState.transform === "fill-sequence") {
-    return initReduceSequence({ _seq });
+    return initSilenceBeatsModulo({ _seq });
   } else {
-    return initFillSequence({ _seq });
+    return initActivateBeatsModulo({ _seq });
   }
 }

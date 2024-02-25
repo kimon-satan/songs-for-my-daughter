@@ -6,17 +6,17 @@ import {
 } from "./pickers";
 
 export const transforms = {
-  fillSequence: {
-    init: initFillSequence,
-    transform: fillSequence
+  activateBeatsModulo: {
+    init: initActivateBeatsModulo,
+    transform: activateBeatsModulo
   },
-  reduceSequence: {
-    init: initReduceSequence,
-    transform: reduceSequence
+  silenceBeatsModulo: {
+    init: initSilenceBeatsModulo,
+    transform: silenceBeatsModulo
   }
 };
 
-export function initFillSequence({ _seq }) {
+export function initActivateBeatsModulo({ _seq }) {
   return {
     transform: "fill-sequence",
     notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
@@ -27,7 +27,7 @@ export function initFillSequence({ _seq }) {
   };
 }
 
-export function fillSequence({ _seq, _transformState }) {
+export function activateBeatsModulo({ _seq, _transformState }) {
   const _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];
 
@@ -58,9 +58,9 @@ export function fillSequence({ _seq, _transformState }) {
   return { _transformState: _transformStateCopy, _seq: _seqCopy };
 }
 
-//////////////////////////// Reduce sequence
+//////////////////////////// Silence Beats Modulo ////////////////////////////
 
-export function initReduceSequence({ _seq }) {
+export function initSilenceBeatsModulo({ _seq }) {
   return {
     transform: "reduce-sequence",
     lastSubtractionOnBeat: getFirstAssignedBeat(_seq) ?? 0,
@@ -69,7 +69,7 @@ export function initReduceSequence({ _seq }) {
   };
 }
 
-export function reduceSequence({ _transformState, _seq }) {
+export function silenceBeatsModulo({ _transformState, _seq }) {
   let _transformStateCopy = { ..._transformState };
   let _seqCopy = [..._seq];
 

@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { fillSequence, initFillSequence } from "./transforms";
+import { activateBeatsModulo, initActivateBeatsModulo } from "./transforms";
 
 describe("transforms", () => {
-  describe("fillSequence", () => {
+  describe("activateBeatsModulo", () => {
     it("it adds a note to an empty sequence", () => {
       const seq = new Array(20);
-      const transformState = initFillSequence({ _seq: seq });
+      const transformState = initActivateBeatsModulo({ _seq: seq });
 
-      const { _seq, _transformState } = fillSequence({
+      const { _seq, _transformState } = activateBeatsModulo({
         _seq: seq,
         _transformState: transformState
       });
