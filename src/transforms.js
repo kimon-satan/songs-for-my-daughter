@@ -1,4 +1,4 @@
-import { getFirstAssignedBeat, getNoteAtIndex } from "./utils";
+import { getActiveBeats, getFirstActiveBeat, getNoteAtIndex } from "./utils";
 import {
   pickChromaFromNotePool,
   pickOctaveDirectional,
@@ -20,27 +20,37 @@ export function initActivateBeatsModulo({ _seq }) {
   return {
     transform: "fill-sequence",
     notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
-    lastAdditionOnBeat: getFirstAssignedBeat(_seq) ?? 0,
+    visited: [],
     cyclesUntilNextAction: 3,
     isAscending: true,
-    isComplete: false
+    isComplete: false,
+    modulo: 14,
+    maxBeats: 10,
+    maxReps: 10
   };
+}
+
+function getModuloBeat({ _transformState, _seq }) {
+  if (_transformState.visited.length === 0) {
+    return getFirstActiveBeat(_seq) || 0;
+  }
+  return (
+    (_transformState.visited.at(-1) + _transformState.modulo) % _seq.length
+  );
 }
 
 export function activateBeatsModulo({ _seq, _transformState }) {
   const _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];
+  const beat = getModuloBeat({ _seq, _transformState });
 
-  _transformStateCopy.isComplete = _transformState.notePool.length === 0;
-
-  const beat = (_transformStateCopy.lastAdditionOnBeat + 14) % _seq.length;
   const [chroma, notePool] = pickChromaFromNotePool(_transformState.notePool);
   _transformStateCopy.notePool = notePool;
   const [octave, isAscending] = pickOctaveDirectional({
     chroma,
     prevNote: getNoteAtIndex({
       _seq,
-      index: _transformState.lastAdditionOnBeat
+      index: _transformState.visited.at(-1)
     }),
     isAscending: _transformState.isAscending
   });
@@ -53,7 +63,19 @@ export function activateBeatsModulo({ _seq, _transformState }) {
       pan: pickPanRandom()
     };
   }
-  _transformStateCopy.lastAdditionOnBeat = beat;
+
+  _transformStateCopy.visited.push(beat);
+
+  const nextBeat = getModuloBeat({
+    _transformState: _transformStateCopy,
+    _seq
+  });
+
+  _transformStateCopy.isComplete =
+    _transformState.notePool.length === 0 ||
+    getActiveBeats(_seqCopy).length >= _transformState.maxBeats ||
+    _transformState.visited.length >= _transformState.maxReps ||
+    _transformState.visited.includes(nextBeat);
 
   return { _transformState: _transformStateCopy, _seq: _seqCopy };
 }
@@ -63,7 +85,7 @@ export function activateBeatsModulo({ _seq, _transformState }) {
 export function initSilenceBeatsModulo({ _seq }) {
   return {
     transform: "reduce-sequence",
-    lastSubtractionOnBeat: getFirstAssignedBeat(_seq) ?? 0,
+    lastSubtractionOnBeat: getFirstActiveBeat(_seq) ?? 0,
     cyclesUntilNextAction: 3,
     isComplete: false
   };

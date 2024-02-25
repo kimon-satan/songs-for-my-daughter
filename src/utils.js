@@ -1,7 +1,11 @@
-export function getFirstAssignedBeat(_seq) {
+export function getFirstActiveBeat(_seq) {
   if (!_seq) return null;
   const b = _seq.findIndex((v) => v !== undefined);
   return b === -1 ? null : b;
+}
+
+export function getActiveBeats(_seq) {
+  return _seq.filter((b) => b !== undefined);
 }
 
 export function getChromaAtIndex({ _seq, index }) {

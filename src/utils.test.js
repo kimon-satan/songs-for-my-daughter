@@ -2,7 +2,7 @@ import { expect, it, describe } from "vitest";
 import {
   choose,
   getChromaAtIndex,
-  getFirstAssignedBeat,
+  getFirstActiveBeat,
   getOctaveAtIndex
 } from "./utils";
 import { sequenceFixtures } from "./sequence.fixtures";
@@ -43,10 +43,10 @@ describe("getOctaveAtIndex", () => {
   });
 });
 
-describe("getFirstAssignedBeat", () => {
+describe("getFirstActiveBeat", () => {
   it("gets the first assignedBeat", () => {
     const seq = sequenceFixtures.aFewBeatsWithOffset();
-    const idx = getFirstAssignedBeat(seq);
+    const idx = getFirstActiveBeat(seq);
     expect(idx).toEqual(2);
   });
 });
