@@ -1,5 +1,10 @@
 import { expect, it, describe } from "vitest";
-import { choose, getChromaAtIndex, getOctaveAtIndex } from "./utils";
+import {
+  choose,
+  getChromaAtIndex,
+  getFirstAssignedBeat,
+  getOctaveAtIndex
+} from "./utils";
 import { sequenceFixtures } from "./sequence.fixtures";
 
 describe("choose", () => {
@@ -35,5 +40,13 @@ describe("getOctaveAtIndex", () => {
     const seq = sequenceFixtures.allBeatsChromatic();
     const chroma = getOctaveAtIndex({ _seq: seq, index: 1 });
     expect(chroma).toEqual(2);
+  });
+});
+
+describe("getFirstAssignedBeat", () => {
+  it("gets the first assignedBeat", () => {
+    const seq = sequenceFixtures.aFewBeatsWithOffset();
+    const idx = getFirstAssignedBeat(seq);
+    expect(idx).toEqual(2);
   });
 });

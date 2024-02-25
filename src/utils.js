@@ -1,3 +1,9 @@
+export function getFirstAssignedBeat(_seq) {
+  if (!_seq) return null;
+  const b = _seq.findIndex((v) => v !== undefined);
+  return b === -1 ? null : b;
+}
+
 export function getChromaAtIndex({ _seq, index }) {
   const n = getNoteAtIndex({ _seq, index });
   return getChromaFromNote(n);

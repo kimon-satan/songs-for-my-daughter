@@ -5,7 +5,7 @@ describe("transforms", () => {
   describe("fillSequence", () => {
     it("it adds a note to an empty sequence", () => {
       const seq = new Array(20);
-      const transformState = initFillSequence();
+      const transformState = initFillSequence({ _seq: seq });
 
       const { _seq, _transformState } = fillSequence({
         _seq: seq,

@@ -1,4 +1,4 @@
-import { getNoteAtIndex } from "./utils";
+import { getFirstAssignedBeat, getNoteAtIndex } from "./utils";
 import {
   pickChromaFromNotePool,
   pickOctaveDirectional,
@@ -16,11 +16,11 @@ export const transforms = {
   }
 };
 
-export function initFillSequence() {
+export function initFillSequence({ _seq }) {
   return {
     transform: "fill-sequence",
     notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
-    lastAdditionOnBeat: 0,
+    lastAdditionOnBeat: getFirstAssignedBeat(_seq) ?? 0,
     cyclesUntilNextAction: 3,
     isAscending: true,
     isComplete: false
@@ -60,10 +60,10 @@ export function fillSequence({ _seq, _transformState }) {
 
 //////////////////////////// Reduce sequence
 
-export function initReduceSequence() {
+export function initReduceSequence({ _seq }) {
   return {
     transform: "reduce-sequence",
-    lastSubtractionOnBeat: 0,
+    lastSubtractionOnBeat: getFirstAssignedBeat(_seq) ?? 0,
     cyclesUntilNextAction: 3,
     isComplete: false
   };

@@ -53,5 +53,17 @@ export const sequenceFixtures = {
       };
     }
     return _seq;
+  },
+
+  aFewBeatsWithOffset: () => {
+    const _seq = new Array(20);
+
+    for (let i = 0; i < 3; i++) {
+      _seq[2 + i * 6] = {
+        note: choose(chroma) + choose(octaves),
+        pan: -1 + Math.random() * 2
+      };
+    }
+    return _seq;
   }
 };

@@ -64,7 +64,7 @@ document.querySelector("#start")?.addEventListener("click", async () => {
   const t = document.querySelector("#transform").value;
 
   if (transforms[t]) {
-    currentTransformState = transforms[t].init();
+    currentTransformState = transforms[t].init({ _seq: seq });
   } else {
     currentTransformState = null;
   }
@@ -84,7 +84,7 @@ document.querySelector("#sequence")?.addEventListener("change", (event) => {
 
 document.querySelector("#transform")?.addEventListener("change", (event) => {
   if (transforms[event.target.value]) {
-    currentTransformState = transforms[event.target.value].init();
+    currentTransformState = transforms[event.target.value].init({ _seq: seq });
   }
 });
 
@@ -155,7 +155,10 @@ function loop(time) {
     playCurrentNote(seq[playbackBeat], time);
   }
 
-  currentTransformState = getNextTransform(currentTransformState);
+  currentTransformState = getNextTransform({
+    _transformState: currentTransformState,
+    _seq: seq
+  });
 
   if (playbackBeat === 0) {
     if (currentTransformState.cyclesUntilNextAction === 0) {
@@ -202,13 +205,13 @@ function playCurrentNote(note, time) {
 
 ////////////////////////////////
 
-function getNextTransform(_transformState) {
+function getNextTransform({ _transformState, _seq }) {
   if (!_transformState) {
-    return initFillSequence();
+    return initFillSequence({ _seq });
   }
 
   if (_transformState.isComplete) {
-    return chooseTransform(_transformState);
+    return chooseTransform({ _transformState, _seq });
   }
 
   return _transformState;
@@ -228,10 +231,10 @@ function applyTransforms({ _transformState, _seq }) {
   }
 }
 
-function chooseTransform(_transformState) {
+function chooseTransform({ _transformState, _seq }) {
   if (_transformState.transform === "fill-sequence") {
-    return initReduceSequence();
+    return initReduceSequence({ _seq });
   } else {
-    return initFillSequence();
+    return initFillSequence({ _seq });
   }
 }
