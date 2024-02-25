@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { deepChoose } from "./utils";
+import { deepChoose, getNoteAtIndex, getOctaveFromNote } from "./utils";
 
 //////////////////////////////// Transforms /////////////////////////////
 
@@ -25,8 +25,11 @@ export function fillSequence({ _seq, _transformState }) {
   _transformStateCopy.notePool = notePool;
   const [octave, isAscending] = getNextOctave({
     chroma,
-    _transformState: _transformStateCopy,
-    _seq: _seqCopy
+    prevNote: getNoteAtIndex({
+      _seq,
+      index: _transformState.lastAdditionOnBeat
+    }),
+    isAscending: _transformState.isAscending
   });
   _transformStateCopy.isAscending = isAscending;
 
@@ -53,19 +56,14 @@ function getNextChroma(_currentTransformState) {
   return [deepChoose(notePoolCopy), notePoolCopy];
 }
 
-export function getNextOctave({ chroma, _transformState, _seq }) {
-  const { lastAdditionOnBeat, isAscending } = _transformState;
-  const prevNote = _seq[lastAdditionOnBeat].note;
-
+export function getNextOctave({ chroma, prevNote, isAscending }) {
   if (!prevNote) {
-    return 3;
+    return [3, true];
   }
-
-  let currOctave = Number(prevNote.substring(prevNote.length - 1));
 
   if (isAscending) {
     if (
-      Tone.Frequency(chroma + currOctave).toMidi() <
+      Tone.Frequency(chroma + getOctaveFromNote(prevNote)).toMidi() <
       Tone.Frequency(prevNote).toMidi()
     ) {
       currOctave += 1;

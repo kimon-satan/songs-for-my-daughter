@@ -1,17 +1,23 @@
 export function getChromaAtIndex({ _seq, index }) {
-  const n = _seq[index].note;
-  if (!n) {
-    return null;
-  }
-  return n.substring(0, n.length - 1);
+  const n = getNoteAtIndex({ _seq, index });
+  return getChromaFromNote(n);
 }
 
 export function getOctaveAtIndex({ _seq, index }) {
-  const n = _seq[index].note;
-  if (!n) {
-    return null;
-  }
-  return Number(n.substring(n.length - 1));
+  const n = getNoteAtIndex({ _seq, index });
+  return getOctaveFromNote(n);
+}
+
+export function getOctaveFromNote(note) {
+  return Number(note.substring(note.length - 1));
+}
+
+export function getChromaFromNote(note) {
+  return note.substring(0, note.length - 1);
+}
+
+export function getNoteAtIndex({ _seq, index }) {
+  return _seq[index]?.note || null;
 }
 
 export function choose(arr) {
