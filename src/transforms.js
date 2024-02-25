@@ -53,7 +53,7 @@ function getNextChroma(_currentTransformState) {
   return [deepChoose(notePoolCopy), notePoolCopy];
 }
 
-function getNextOctave({ chroma, _transformState, _seq }) {
+export function getNextOctave({ chroma, _transformState, _seq }) {
   const { lastAdditionOnBeat, isAscending } = _transformState;
   const prevNote = _seq[lastAdditionOnBeat].note;
 

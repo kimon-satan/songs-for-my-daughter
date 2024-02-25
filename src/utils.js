@@ -1,3 +1,19 @@
+export function getChromaAtIndex({ _seq, index }) {
+  const n = _seq[index].note;
+  if (!n) {
+    return null;
+  }
+  return n.substring(0, n.length - 1);
+}
+
+export function getOctaveAtIndex({ _seq, index }) {
+  const n = _seq[index].note;
+  if (!n) {
+    return null;
+  }
+  return Number(n.substring(n.length - 1));
+}
+
 export function choose(arr) {
   return arr[Math.floor(Math.random() * arr.length)];
 }

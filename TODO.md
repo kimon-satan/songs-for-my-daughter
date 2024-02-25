@@ -2,7 +2,6 @@
 [] lastBeat calculations
 [] variable start and end points
 
-[] Selectable states for testing
-[] Test suite
+[] Selectable states for sandbox
 
 [] Experiment with sections of double tempo
