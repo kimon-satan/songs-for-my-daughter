@@ -8,7 +8,7 @@ describe("silenceBeatsModulo", () => {
     const seq = sequenceFixtures.allBeatsChromatic();
     const transformState = initSilenceBeatsModulo({ _seq: seq });
 
-    const { _seq, _transformState } = silenceBeatsModulo({
+    const { _seq } = silenceBeatsModulo({
       _seq: seq,
       _transformState: transformState
     });
