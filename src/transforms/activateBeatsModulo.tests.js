@@ -10,7 +10,7 @@ describe("activateBeatsModulo", () => {
     const seq = new Array(20);
     const transformState = initActivateBeatsModulo({ _seq: seq });
 
-    const { _seq, _transformState } = activateBeatsModulo({
+    const { _seq } = activateBeatsModulo({
       _seq: seq,
       _transformState: transformState
     });

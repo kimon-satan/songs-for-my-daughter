@@ -2,6 +2,10 @@ import {
   activateBeatsModulo,
   initActivateBeatsModulo
 } from "./activateBeatsModulo";
+import {
+  activateMultipleBeats,
+  initActivateMultipleBeats
+} from "./activateMultipleBeats";
 
 import {
   silenceBeatsModulo,
@@ -16,5 +20,9 @@ export const transforms = {
   silenceBeatsModulo: {
     init: initSilenceBeatsModulo,
     transform: silenceBeatsModulo
+  },
+  activateMultipleBeats: {
+    init: initActivateMultipleBeats,
+    transform: activateMultipleBeats
   }
 };

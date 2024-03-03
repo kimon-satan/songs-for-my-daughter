@@ -1,13 +1,16 @@
 import * as Tone from "tone";
 
-import { deepChoose, getOctaveFromNote } from "../utils";
+import { choose, deepChoose, getOctaveFromNote } from "../utils";
 
-export function pickChromaFromNotePool(notePool) {
+export function pickChromaFromNotePool(notePool, isDeep = true) {
   if (notePool.length === 0) {
     return [undefined, notePool];
   }
   const notePoolCopy = [...notePool];
-  return [deepChoose(notePoolCopy), notePoolCopy];
+  if (isDeep) {
+    return [deepChoose(notePoolCopy), notePoolCopy];
+  }
+  return [choose(notePoolCopy), notePoolCopy];
 }
 
 export function pickOctaveDirectional({ chroma, prevNote, isAscending }) {

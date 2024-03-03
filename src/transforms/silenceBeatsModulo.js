@@ -1,4 +1,4 @@
-import { getActiveBeats, getNoteAtIndex } from "../utils";
+import { getActiveBeats } from "../utils";
 import { getModuloBeat } from "./transform-utils";
 
 /**

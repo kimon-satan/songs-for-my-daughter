@@ -80,19 +80,17 @@ document.querySelector("#sequence")?.addEventListener("change", (event) => {
   }
 });
 
-document
-  .querySelector("#apply-transform")
-  ?.addEventListener("click", (event) => {
-    const t = document.querySelector("#transform").value;
-    const raw_args = document.querySelector("#transform-args").value;
-    const parsed_args = safeParseJson(raw_args);
-    if (transforms[t]) {
-      currentTransformState = transforms[t].init({
-        _seq: seq,
-        ...parsed_args
-      });
-    }
-  });
+document.querySelector("#apply-transform")?.addEventListener("click", () => {
+  const t = document.querySelector("#transform").value;
+  const raw_args = document.querySelector("#transform-args").value;
+  const parsed_args = safeParseJson(raw_args);
+  if (transforms[t]) {
+    currentTransformState = transforms[t].init({
+      _seq: seq,
+      ...parsed_args
+    });
+  }
+});
 
 ///////////////////////// Setup //////////////////////////
 
