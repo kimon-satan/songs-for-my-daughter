@@ -40,29 +40,43 @@ function getModuloBeat({ _transformState, _seq }) {
   return (ref + _transformState.modulo) % _seq.length;
 }
 
+/**
+ *
+ * @description
+ * activates a beat
+ * only if unoccupied
+ * uses a modulo to select the next beat to be activated
+ * ends if:
+ *  - reencounters a visted beat
+ *  - maxReps reached
+ *  - maxBeats are activated
+ */
+
 export function activateBeatsModulo({ _seq, _transformState }) {
   const _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];
   const beat = getModuloBeat({ _seq, _transformState });
 
-  const [chroma, notePool] = pickChromaFromNotePool(_transformState.notePool);
-  _transformStateCopy.notePool = notePool;
-  const [octave, isAscending] = pickOctaveDirectional({
-    chroma,
-    prevNote: getNoteAtIndex({
-      _seq,
-      index: _transformState.visited.at(-1)
-    }),
-    isAscending: _transformState.isAscending
-  });
-  _transformStateCopy.isAscending = isAscending;
+  if (!_seqCopy[beat]) {
+    const [chroma, notePool] = pickChromaFromNotePool(_transformState.notePool);
+    _transformStateCopy.notePool = notePool;
+    const [octave, isAscending] = pickOctaveDirectional({
+      chroma,
+      prevNote: getNoteAtIndex({
+        _seq,
+        index: _transformState.visited.at(-1)
+      }),
+      isAscending: _transformState.isAscending
+    });
+    _transformStateCopy.isAscending = isAscending;
 
-  if (chroma && octave) {
-    const note = chroma + octave;
-    _seqCopy[beat] = {
-      note,
-      pan: pickPanRandom()
-    };
+    if (chroma && octave) {
+      const note = chroma + octave;
+      _seqCopy[beat] = {
+        note,
+        pan: pickPanRandom()
+      };
+    }
   }
 
   _transformStateCopy.visited.push(beat);

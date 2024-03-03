@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { randomArray, choose, displayJSON } from "./utils";
+import { randomArray, choose, displayJSON, safeParseJson } from "./utils";
 import {
   initActivateBeatsModulo,
   activateBeatsModulo,
@@ -64,14 +64,7 @@ document.querySelector("#start")?.addEventListener("click", async () => {
   const t = document.querySelector("#transform").value;
   const raw_args = document.querySelector("#transform-args").value;
 
-  const parsed_args = (() => {
-    try {
-      return JSON.parse(raw_args);
-    } catch (e) {
-      console.log(e);
-      return null;
-    }
-  })();
+  const parsed_args = safeParseJson(raw_args);
 
   if (transforms[t]) {
     currentTransformState = transforms[t].init({ _seq: seq, ...parsed_args });
@@ -96,9 +89,12 @@ document
   .querySelector("#apply-transform")
   ?.addEventListener("click", (event) => {
     const t = document.querySelector("#transform").value;
+    const raw_args = document.querySelector("#transform-args").value;
+    const parsed_args = safeParseJson(raw_args);
     if (transforms[t]) {
       currentTransformState = transforms[t].init({
-        _seq: seq
+        _seq: seq,
+        ...parsed_args
       });
     }
   });

@@ -51,6 +51,15 @@ export function randomArray(numItems, isNormalized) {
   return isNormalized ? normalizeSum(array) : array;
 }
 
+export function safeParseJson(raw_json) {
+  try {
+    return JSON.parse(raw_json);
+  } catch (e) {
+    console.log(e);
+    return null;
+  }
+}
+
 export function displayJSON(obj, context) {
   Object.keys(obj).forEach((k) => {
     if (typeof obj[k] !== "object") {
