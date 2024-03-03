@@ -8,6 +8,22 @@ export function getActiveBeats(_seq) {
   return _seq.filter((b) => b !== undefined);
 }
 
+export function getNearestActiveBeat({ _seq, index }) {
+  const deltas = _seq.map(
+    (val, i) => val && Math.min(Math.abs(index - i), _seq.length - index)
+  );
+
+  let lowestDelta = 9999;
+  let nearestActiveBeat = -1;
+  deltas.forEach((d, i) => {
+    if (d !== undefined && d < lowestDelta) {
+      nearestActiveBeat = i;
+      lowestDelta = d;
+    }
+  });
+  return nearestActiveBeat;
+}
+
 export function getChromaAtIndex({ _seq, index }) {
   const n = getNoteAtIndex({ _seq, index });
   return getChromaFromNote(n);

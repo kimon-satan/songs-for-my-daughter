@@ -3,6 +3,7 @@ import {
   choose,
   getChromaAtIndex,
   getFirstActiveBeat,
+  getNearestActiveBeat,
   getOctaveAtIndex
 } from "./utils";
 import { sequenceFixtures } from "./sequence.fixtures";
@@ -44,9 +45,27 @@ describe("getOctaveAtIndex", () => {
 });
 
 describe("getFirstActiveBeat", () => {
-  it("gets the first assignedBeat", () => {
+  it("gets the first active beat", () => {
     const seq = sequenceFixtures.aFewBeatsWithOffset();
     const idx = getFirstActiveBeat(seq);
     expect(idx).toEqual(2);
+  });
+});
+
+describe("getNearestActiveBeat", () => {
+  it.each([
+    [0, 0],
+    [1, 0],
+    [2, 0],
+    [9, 10],
+    [11, 10],
+    [14, 10],
+    [15, 0],
+    [17, 0],
+    [19, 0]
+  ])("gets the nearest active beat", (index, expected) => {
+    const seq = sequenceFixtures.oneAndTen();
+    const beat = getNearestActiveBeat({ _seq: seq, index });
+    expect(beat).toEqual(expected);
   });
 });

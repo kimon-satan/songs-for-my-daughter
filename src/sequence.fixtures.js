@@ -65,5 +65,21 @@ export const sequenceFixtures = {
       };
     }
     return _seq;
+  },
+
+  oneAndTen: () => {
+    const _seq = new Array(20);
+
+    _seq[0] = {
+      note: choose(chroma) + choose(octaves),
+      pan: -1 + Math.random() * 2
+    };
+
+    _seq[10] = {
+      note: choose(chroma) + choose(octaves),
+      pan: -1 + Math.random() * 2
+    };
+
+    return _seq;
   }
 };

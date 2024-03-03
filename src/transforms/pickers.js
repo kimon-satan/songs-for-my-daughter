@@ -1,6 +1,12 @@
 import * as Tone from "tone";
 
-import { choose, deepChoose, getOctaveFromNote } from "../utils";
+import {
+  choose,
+  deepChoose,
+  getChromaAtIndex,
+  getNearestActiveBeat,
+  getOctaveFromNote
+} from "../utils";
 
 export function pickChromaFromNotePool(notePool, isDeep = true) {
   if (notePool.length === 0) {
@@ -11,6 +17,11 @@ export function pickChromaFromNotePool(notePool, isDeep = true) {
     return [deepChoose(notePoolCopy), notePoolCopy];
   }
   return [choose(notePoolCopy), notePoolCopy];
+}
+
+export function pickChromaFromNearest({ _seq, index }) {
+  const beat = getNearestActiveBeat({ _seq, index });
+  return getChromaAtIndex({ _seq, index: beat });
 }
 
 export function pickOctaveDirectional({ chroma, prevNote, isAscending }) {
