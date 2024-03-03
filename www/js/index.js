@@ -13423,7 +13423,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   };
   function bs() {
     return {
-      transform: "fill-sequence",
+      transform: "activate-beats-modulo",
       notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
       lastAdditionOnBeat: 0,
       cyclesUntilNextAction: 3,
@@ -13451,7 +13451,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   }
   function gn() {
     return {
-      transform: "reduce-sequence",
+      transform: "silence-beats-modulo",
       lastSubtractionOnBeat: 0,
       cyclesUntilNextAction: 3,
       isComplete: !1
@@ -13615,16 +13615,16 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   }
   function Bp({ _transformState: r, _seq: t }) {
     switch (r.transform) {
-      case "fill-sequence":
+      case "activate-beats-modulo":
         return dn({ _transformState: r, _seq: t });
-      case "reduce-sequence":
+      case "silence-beats-modulo":
         return _n({ _transformState: r, _seq: t });
       default:
         throw new Error("transform not found");
     }
   }
   function Gp(r) {
-    return r.transform === "fill-sequence" ? gn() : bs();
+    return r.transform === "activate-beats-modulo" ? gn() : bs();
   }
 })();
 /*! Bundled license information:

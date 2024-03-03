@@ -1,5 +1,5 @@
 import * as Tone from "tone";
-import { randomArray, choose } from "./utils";
+import { randomArray, choose, displayJSON } from "./utils";
 import {
   initActivateBeatsModulo,
   activateBeatsModulo,
@@ -92,11 +92,16 @@ document.querySelector("#sequence")?.addEventListener("change", (event) => {
   }
 });
 
-document.querySelector("#transform")?.addEventListener("change", (event) => {
-  if (transforms[event.target.value]) {
-    currentTransformState = transforms[event.target.value].init({ _seq: seq });
-  }
-});
+document
+  .querySelector("#apply-transform")
+  ?.addEventListener("click", (event) => {
+    const t = document.querySelector("#transform").value;
+    if (transforms[t]) {
+      currentTransformState = transforms[t].init({
+        _seq: seq
+      });
+    }
+  });
 
 ///////////////////////// Setup //////////////////////////
 
@@ -129,6 +134,7 @@ function setupMeter() {
   };
 
   const updateMeter = () => {
+    context.setTransform(1, 0, 0, 1, 0, 0);
     const dbs = meter.map((m) => m.getValue());
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = `rgb(0,0,255,0.25)`;
@@ -136,20 +142,13 @@ function setupMeter() {
     drawVolume(dbs[0], 75);
     drawVolume(dbs[1], 225);
     context.fillStyle = `rgb(0,0,0)`;
-    context.fillText(`playbackBeat: ${playbackBeat}`, 0, 50);
+
+    context.translate(0, 100);
+    context.fillText(`playbackBeat: ${playbackBeat}`, 0, 0);
 
     if (currentTransformState) {
-      context.fillText(
-        `cycles until next action: ${currentTransformState.cyclesUntilNextAction}`,
-        0,
-        100
-      );
-
-      context.fillText(
-        `isAscending: ${currentTransformState.isAscending}`,
-        0,
-        120
-      );
+      context.translate(10, 25);
+      displayJSON(currentTransformState, context);
     }
 
     context, window.requestAnimationFrame(updateMeter);
@@ -229,12 +228,12 @@ function getNextTransform({ _transformState, _seq }) {
 
 function applyTransforms({ _transformState, _seq }) {
   switch (_transformState.transform) {
-    case "fill-sequence":
+    case "activate-beats-modulo":
       return activateBeatsModulo({
         _transformState,
         _seq
       });
-    case "reduce-sequence":
+    case "silence-beats-modulo":
       return silenceBeatsModulo({ _transformState, _seq });
     default:
       throw new Error("transform not found");
@@ -242,7 +241,7 @@ function applyTransforms({ _transformState, _seq }) {
 }
 
 function chooseTransform({ _transformState, _seq }) {
-  if (_transformState.transform === "fill-sequence") {
+  if (_transformState.transform === "activate-beats-modulo") {
     return initSilenceBeatsModulo({ _seq });
   } else {
     return initActivateBeatsModulo({ _seq });

@@ -50,3 +50,15 @@ export function randomArray(numItems, isNormalized) {
   }
   return isNormalized ? normalizeSum(array) : array;
 }
+
+export function displayJSON(obj, context) {
+  Object.keys(obj).forEach((k) => {
+    if (typeof obj[k] !== "object") {
+      context.fillText(`${k}: ${obj[k]}`, 0, 0);
+      context.translate(0, 14);
+    } else {
+      context.fillText(`${k}: ${JSON.stringify(obj[k])}`, 0, 0);
+      context.translate(0, 14);
+    }
+  });
+}

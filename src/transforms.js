@@ -18,7 +18,7 @@ export const transforms = {
 
 export function initActivateBeatsModulo({ _seq, ...args }) {
   return {
-    transform: "fill-sequence",
+    transform: "activate-beats-modulo",
     notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
     visited: [],
     cyclesUntilNextAction: 3,
@@ -85,7 +85,7 @@ export function activateBeatsModulo({ _seq, _transformState }) {
 
 export function initSilenceBeatsModulo({ _seq, ...args }) {
   return {
-    transform: "reduce-sequence",
+    transform: "silence-beats-modulo",
     lastSubtractionOnBeat: getFirstActiveBeat(_seq) ?? 0,
     cyclesUntilNextAction: 3,
     isComplete: false,
