@@ -7,6 +7,7 @@ import {
   silenceBeatsModulo,
   transforms
 } from "./transforms";
+import { getActiveBeats } from "./utils";
 
 import { sequenceFixtures } from "./sequence.fixtures";
 
@@ -139,11 +140,15 @@ function setupMeter() {
     drawVolume(dbs[1], 225);
     context.fillStyle = `rgb(0,0,0)`;
 
-    context.translate(0, 100);
+    context.translate(10, 100);
     context.fillText(`playbackBeat: ${playbackBeat}`, 0, 0);
+    if (seq) {
+      context.translate(0, 25);
+      context.fillText(`num active beats: ${getActiveBeats(seq).length}`, 0, 0);
+    }
 
     if (currentTransformState) {
-      context.translate(10, 25);
+      context.translate(0, 25);
       displayJSON(currentTransformState, context);
     }
 

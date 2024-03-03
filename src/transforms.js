@@ -1,4 +1,5 @@
-import { getActiveBeats, getFirstActiveBeat, getNoteAtIndex } from "./utils";
+import { getActiveBeats, getNoteAtIndex } from "./utils";
+import { getModuloBeat } from "./transform-utils";
 import {
   pickChromaFromNotePool,
   pickOctaveDirectional,
@@ -29,15 +30,6 @@ export function initActivateBeatsModulo({ _seq, ...args }) {
     maxReps: 10,
     ...args
   };
-}
-
-function getModuloBeat({ _transformState, _seq }) {
-  const ref =
-    _transformState.visited.length === 0
-      ? getFirstActiveBeat(_seq) || 0
-      : _transformState.visited.at(-1);
-
-  return (ref + _transformState.modulo) % _seq.length;
 }
 
 /**
@@ -87,10 +79,10 @@ export function activateBeatsModulo({ _seq, _transformState }) {
   });
 
   _transformStateCopy.isComplete =
-    _transformState.notePool.length === 0 ||
+    _transformStateCopy.notePool.length === 0 ||
     getActiveBeats(_seqCopy).length >= _transformState.maxBeats ||
-    _transformState.visited.length >= _transformState.maxReps ||
-    _transformState.visited.includes(nextBeat);
+    _transformStateCopy.visited.length >= _transformState.maxReps ||
+    _transformStateCopy.visited.includes(nextBeat);
 
   return { _transformState: _transformStateCopy, _seq: _seqCopy };
 }
@@ -100,8 +92,11 @@ export function activateBeatsModulo({ _seq, _transformState }) {
 export function initSilenceBeatsModulo({ _seq, ...args }) {
   return {
     transform: "silence-beats-modulo",
-    lastSubtractionOnBeat: getFirstActiveBeat(_seq) ?? 0,
+    visited: [],
+    modulo: 14,
     cyclesUntilNextAction: 3,
+    minBeats: 3,
+    maxReps: 10,
     isComplete: false,
     ...args
   };
@@ -111,13 +106,20 @@ export function silenceBeatsModulo({ _transformState, _seq }) {
   let _transformStateCopy = { ..._transformState };
   let _seqCopy = [..._seq];
 
-  const notesRemaining = _seq.reduce((prev, curr) => prev + (curr ? 1 : 0), 0);
-
-  const beat = (_transformStateCopy.lastSubtractionOnBeat + 14) % _seq.length;
+  const beat = getModuloBeat({ _seq, _transformState });
   _seqCopy[beat] = undefined;
-  _transformStateCopy.lastSubtractionOnBeat = beat;
+  _transformStateCopy.visited.push(beat);
 
-  if (notesRemaining === 3) {
+  const nextBeat = getModuloBeat({
+    _transformState: _transformStateCopy,
+    _seq
+  });
+
+  if (
+    getActiveBeats(_seqCopy).length <= _transformState.minBeats ||
+    _transformStateCopy.visited.length >= _transformState.maxReps ||
+    _transformStateCopy.visited.includes(nextBeat)
+  ) {
     _transformStateCopy.isComplete = true;
   }
 
