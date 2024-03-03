@@ -1,6 +1,6 @@
 import * as Tone from "tone";
 
-import { deepChoose, getOctaveFromNote } from "./utils";
+import { deepChoose, getOctaveFromNote } from "../utils";
 
 export function pickChromaFromNotePool(notePool) {
   if (notePool.length === 0) {

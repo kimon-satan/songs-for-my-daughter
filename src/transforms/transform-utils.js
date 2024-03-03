@@ -1,4 +1,4 @@
-import { getFirstActiveBeat } from "./utils";
+import { getFirstActiveBeat } from "../utils";
 
 export function getModuloBeat({ _transformState, _seq }) {
   const ref =

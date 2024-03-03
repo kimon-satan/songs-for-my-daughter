@@ -1,12 +1,6 @@
 import * as Tone from "tone";
 import { randomArray, choose, displayJSON, safeParseJson } from "./utils";
-import {
-  initActivateBeatsModulo,
-  activateBeatsModulo,
-  initSilenceBeatsModulo,
-  silenceBeatsModulo,
-  transforms
-} from "./transforms";
+import { transforms } from "./transforms/transforms";
 import { getActiveBeats } from "./utils";
 
 import { sequenceFixtures } from "./sequence.fixtures";
@@ -217,7 +211,7 @@ function playCurrentNote(note, time) {
 
 function getNextTransform({ _transformState, _seq }) {
   if (!_transformState) {
-    return initActivateBeatsModulo({ _seq });
+    return transforms.activateBeatsModulo.init({ _seq });
   }
 
   if (_transformState.isComplete) {
@@ -228,23 +222,20 @@ function getNextTransform({ _transformState, _seq }) {
 }
 
 function applyTransforms({ _transformState, _seq }) {
-  switch (_transformState.transform) {
-    case "activate-beats-modulo":
-      return activateBeatsModulo({
-        _transformState,
-        _seq
-      });
-    case "silence-beats-modulo":
-      return silenceBeatsModulo({ _transformState, _seq });
-    default:
-      throw new Error("transform not found");
+  if (transforms[_transformState.transform]) {
+    return transforms[_transformState.transform].transform({
+      _transformState,
+      _seq
+    });
+  } else {
+    throw new Error("transform not found");
   }
 }
 
 function chooseTransform({ _transformState, _seq }) {
-  if (_transformState.transform === "activate-beats-modulo") {
-    return initSilenceBeatsModulo({ _seq });
+  if (_transformState.transform === "activateBeatsModulo") {
+    return transforms.silenceBeatsModulo.init({ _seq });
   } else {
-    return initActivateBeatsModulo({ _seq });
+    return transforms.activateBeatsModulo.init({ _seq });
   }
 }
