@@ -10,6 +10,10 @@ import {
   initReplaceBeatsModulo,
   replaceBeatsModulo
 } from "./replaceBeatsModulo";
+import {
+  initReplaceMultipleBeats,
+  replaceMultipleBeats
+} from "./replaceMultipleBeats";
 
 import {
   silenceBeatsModulo,
@@ -36,6 +40,10 @@ export const transforms = {
   activateMultipleBeats: {
     init: initActivateMultipleBeats,
     transform: activateMultipleBeats
+  },
+  replaceMultipleBeats: {
+    init: initReplaceMultipleBeats,
+    transform: replaceMultipleBeats
   },
   silenceMultipleBeats: {
     init: initSilenceMultipleBeats,

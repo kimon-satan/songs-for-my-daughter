@@ -1,17 +1,17 @@
 import { baseMultipleBeats, initBaseMultipleBeats } from "./baseMultilpleBeats";
 
-export function initActivateMultipleBeats({ _seq, ...args }) {
+export function initReplaceMultipleBeats({ _seq, ...args }) {
   return {
     ...initBaseMultipleBeats({ _seq }),
-    transform: "activateMultipleBeats",
+    transform: "replaceMultipleBeats",
     ...args
   };
 }
 
-export function activateMultipleBeats({ _transformState, _seq }) {
+export function replaceMultipleBeats({ _transformState, _seq }) {
   return baseMultipleBeats({
     _seq,
     _transformState,
-    shouldProceed: (beat) => beat === undefined
+    shouldProceed: (beat) => beat !== undefined
   });
 }
