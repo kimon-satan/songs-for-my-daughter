@@ -19,7 +19,7 @@ export function initReplaceBeatsModulo({ _seq, ...args }) {
   return {
     ...base,
     transform: "replaceBeatsModulo",
-    notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
+    chromaPool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
     ...args
   };
 }
@@ -32,6 +32,6 @@ export function replaceBeatsModulo({ _seq, _transformState }) {
     checkComplete: ({ _transformState, _seq }) =>
       revistedCheck({ _transformState, _seq }) ||
       maxRepsCheck({ _transformState, _seq }) ||
-      _transformState.notePool.length === 0
+      _transformState.chromaPool.length === 0
   });
 }

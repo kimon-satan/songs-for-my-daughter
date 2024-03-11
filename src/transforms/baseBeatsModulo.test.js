@@ -19,14 +19,14 @@ describe("baseBeatsModulo", () => {
 
   it("it replaces a note in a populated sequence", () => {
     let seq = sequenceFixtures.allBeatsChromatic();
-    const notePool = new Array(20).fill("A");
+    const chromaPool = new Array(20).fill("A");
     const transformState = initBaseBeatsModulo({
       _seq: seq,
       modulo: 1,
-      notePool
+      chromaPool
     });
 
-    for (let i = 0; i < notePool.length; i++) {
+    for (let i = 0; i < chromaPool.length; i++) {
       const { _seq } = baseBeatsModulo({
         _seq: seq,
         _transformState: transformState

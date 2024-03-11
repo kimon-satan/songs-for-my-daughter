@@ -1,9 +1,9 @@
 import { getNoteAtIndex } from "../utils";
 import { getModuloBeat, allChecks } from "./helpers/transform-utils";
 import {
-  pickChromaFromNotePool,
   pickOctaveDirectional,
-  pickPanRandom
+  pickPanRandom,
+  pickValueFromPool
 } from "../pickers/pickers";
 
 /**
@@ -21,7 +21,12 @@ import {
 export function initBaseBeatsModulo({ _seq, ...args }) {
   return {
     transform: "baseBeatsModulo",
-    notePool: new Array(10).fill("A"),
+    pickers: {
+      chroma: "ChromaPoolShallow",
+      octave: "AscendDescend",
+      pan: "Random"
+    },
+    chromaPool: new Array(10).fill("A"),
     visited: [],
     cyclesUntilNextAction: 3,
     isAscending: true,
@@ -44,8 +49,8 @@ export function baseBeatsModulo({
   const beat = getModuloBeat({ _seq, _transformState });
 
   if (shouldProceed(_seqCopy[beat])) {
-    const [chroma, notePool] = pickChromaFromNotePool(_transformState.notePool);
-    _transformStateCopy.notePool = notePool;
+    const [chroma, chromaPool] = pickValueFromPool(_transformState.chromaPool);
+    _transformStateCopy.chromaPool = chromaPool;
     const [octave, isAscending] = pickOctaveDirectional({
       chroma,
       prevNote: getNoteAtIndex({

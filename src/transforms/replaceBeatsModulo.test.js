@@ -20,14 +20,14 @@ describe("replaceBeatsModulo", () => {
 
   it("it replaces a note in a populated sequence", () => {
     let seq = sequenceFixtures.allBeatsA3();
-    const notePool = new Array(20).fill("B");
+    const chromaPool = new Array(20).fill("B");
     let transformState = initReplaceBeatsModulo({
       _seq: seq,
       modulo: 1,
-      notePool
+      chromaPool
     });
 
-    for (let i = 0; i < notePool.length; i++) {
+    for (let i = 0; i < chromaPool.length; i++) {
       const { _seq, _transformState } = replaceBeatsModulo({
         _seq: seq,
         _transformState: transformState
@@ -41,11 +41,11 @@ describe("replaceBeatsModulo", () => {
 
   it("max beats does not affect completeness", () => {
     let seq = sequenceFixtures.allBeatsA3();
-    const notePool = new Array(10).fill("B");
+    const chromaPool = new Array(10).fill("B");
     let transformState = initReplaceBeatsModulo({
       _seq: seq,
       modulo: 1,
-      notePool,
+      chromaPool,
       maxBeats: 3
     });
 

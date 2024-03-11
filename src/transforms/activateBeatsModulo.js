@@ -18,7 +18,7 @@ export function initActivateBeatsModulo({ _seq, ...args }) {
   return {
     ...base,
     transform: "activateBeatsModulo",
-    notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
+    chromaPool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
     ...args
   };
 }

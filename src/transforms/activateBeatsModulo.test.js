@@ -21,14 +21,14 @@ describe("activateBeatsModulo", () => {
 
   it("it doesn't replace a note in a populated sequence", () => {
     let seq = sequenceFixtures.allBeatsA3();
-    const notePool = new Array(20).fill("B");
+    const chromaPool = new Array(20).fill("B");
     const transformState = initActivateBeatsModulo({
       _seq: seq,
       modulo: 1,
-      notePool
+      chromaPool
     });
 
-    for (let i = 0; i < notePool.length; i++) {
+    for (let i = 0; i < chromaPool.length; i++) {
       const { _seq } = activateBeatsModulo({
         _seq: seq,
         _transformState: transformState

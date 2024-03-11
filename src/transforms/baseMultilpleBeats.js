@@ -2,8 +2,8 @@ import { shuffle } from "../utils";
 
 import {
   pickChromaFromNearest,
-  pickChromaFromNotePool,
-  pickPanRandom
+  pickPanRandom,
+  pickValueFromPool
 } from "../pickers/pickers";
 
 export function initBaseMultipleBeats({ _seq, beats, maxBeats, ...args }) {
@@ -33,11 +33,8 @@ export function baseMultipleBeats({
   _transformState.beats.forEach((beat) => {
     if (shouldProceed(_seqCopy[beat])) {
       const chroma = (() => {
-        if (_transformState.notePool) {
-          const [chroma] = pickChromaFromNotePool(
-            _transformState.notePool,
-            false
-          );
+        if (_transformState.chromaPool) {
+          const [chroma] = pickValueFromPool(_transformState.chromaPool, false);
           return chroma;
         }
         return pickChromaFromNearest({ _seq, index: beat });

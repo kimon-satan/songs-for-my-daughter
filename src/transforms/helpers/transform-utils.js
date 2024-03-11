@@ -30,6 +30,6 @@ export function allChecks({ _transformState, _seq }) {
     revistedCheck({ _transformState, _seq }) ||
     maxBeatsCheck({ _transformState, _seq }) ||
     maxRepsCheck({ _transformState, _seq }) ||
-    _transformState.notePool.length === 0
+    _transformState.chromaPool.length === 0
   );
 }

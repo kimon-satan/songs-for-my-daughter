@@ -41,7 +41,7 @@ describe("baseMultipleBeats", () => {
     const transformState = initBaseMultipleBeats({
       _seq: seq,
       maxBeats: 5,
-      notePool: ["B"]
+      chromaPool: ["B"]
     });
     const { _seq } = baseMultipleBeats({
       _seq: seq,

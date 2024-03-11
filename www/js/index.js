@@ -13424,7 +13424,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   function bs() {
     return {
       transform: "activateBeatsModulo",
-      notePool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
+      chromaPool: ["A", "A", "B", "C", "D", "E", "F", "G", "F#", "C#"],
       lastAdditionOnBeat: 0,
       cyclesUntilNextAction: 3,
       isAscending: !0,
@@ -13434,10 +13434,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   function dn({ _seq: r, _transformState: t }) {
     let e = { ...t },
       o = [...r];
-    e.isComplete = t.notePool.length === 0;
+    e.isComplete = t.chromaPool.length === 0;
     let s = (e.lastAdditionOnBeat + 14) % r.length,
-      [n, a] = $u(t.notePool);
-    e.notePool = a;
+      [n, a] = $u(t.chromaPool);
+    e.chromaPool = a;
     let [i, c] = Ku({
       chroma: n,
       prevNote: Xu({ _seq: r, index: t.lastAdditionOnBeat }),
