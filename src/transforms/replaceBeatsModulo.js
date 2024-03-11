@@ -1,9 +1,5 @@
-import {
-  baseBeatsModulo,
-  initBaseBeatsModulo,
-  revistedCheck,
-  maxRepsCheck
-} from "./baseBeatsModulo";
+import { revistedCheck, maxRepsCheck } from "./helpers/transform-utils";
+import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
 
 /**
  *

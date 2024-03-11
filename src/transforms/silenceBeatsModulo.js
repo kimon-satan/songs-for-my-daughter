@@ -1,5 +1,5 @@
 import { getActiveBeats } from "../utils";
-import { getModuloBeat } from "./transform-utils";
+import { getModuloBeat } from "./helpers/transform-utils";
 
 /**
  *

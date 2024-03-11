@@ -4,7 +4,7 @@ import {
   pickChromaFromNearest,
   pickChromaFromNotePool,
   pickPanRandom
-} from "./pickers";
+} from "../pickers/pickers";
 
 export function initBaseMultipleBeats({ _seq, beats, maxBeats, ...args }) {
   let _beats = beats ? [...beats] : _seq.map((b, i) => i);

@@ -1,10 +1,10 @@
-import { getActiveBeats, getNoteAtIndex } from "../utils";
-import { getModuloBeat } from "./transform-utils";
+import { getNoteAtIndex } from "../utils";
+import { getModuloBeat, allChecks } from "./helpers/transform-utils";
 import {
   pickChromaFromNotePool,
   pickOctaveDirectional,
   pickPanRandom
-} from "./pickers";
+} from "../pickers/pickers";
 
 /**
  *
@@ -33,36 +33,11 @@ export function initBaseBeatsModulo({ _seq, ...args }) {
   };
 }
 
-export function revistedCheck({ _transformState, _seq }) {
-  const nextBeat = getModuloBeat({
-    _transformState,
-    _seq
-  });
-  return _transformState.visited.includes(nextBeat);
-}
-
-export function maxBeatsCheck({ _transformState, _seq }) {
-  return getActiveBeats(_seq).length >= _transformState.maxBeats;
-}
-
-export function maxRepsCheck({ _transformState }) {
-  return _transformState.visited.length >= _transformState.maxReps;
-}
-
-export function defaultCheckComplete({ _transformState, _seq }) {
-  return (
-    revistedCheck({ _transformState, _seq }) ||
-    maxBeatsCheck({ _transformState, _seq }) ||
-    maxRepsCheck({ _transformState, _seq }) ||
-    _transformState.notePool.length === 0
-  );
-}
-
 export function baseBeatsModulo({
   _seq,
   _transformState,
   shouldProceed = () => true,
-  checkComplete = defaultCheckComplete
+  checkComplete = allChecks
 }) {
   const _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];

@@ -8,6 +8,25 @@ import {
   getOctaveFromNote
 } from "../utils";
 
+export const CHROMA_PICKERS = [
+  "NotePoolShallow",
+  "NotePoolDeep",
+  "CopyNeighbour",
+  "NotePoolClosestMatch"
+];
+
+export const OCTAVE_PICKERS = [
+  "AscendDescend",
+  "PreserveOctave",
+  "OctavePoolShallow",
+  "OctavePoolDeep",
+  "CopyNeighbour"
+];
+
+export const PAN_PICKERS = ["random", "preservePan"];
+
+export function pickNote({ _seq, _transformState, currIndex }) {}
+
 export function pickChromaFromNotePool(notePool, isDeep = true) {
   if (notePool.length === 0) {
     return [undefined, notePool];
