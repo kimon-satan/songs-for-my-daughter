@@ -8,6 +8,14 @@ export function getActiveBeats(_seq) {
   return _seq.filter((b) => b !== undefined);
 }
 
+export function getActiveIndexes({ _seq }) {
+  return _seq.reduce((prev, v, i) => (v ? [...prev, i] : prev), []);
+}
+
+export function getNonActiveIndexes({ _seq }) {
+  return _seq.reduce((prev, v, i) => (v ? prev : [...prev, i]), []);
+}
+
 export function getNearestActiveBeat({ _seq, index }) {
   const deltas = _seq.map(
     (val, i) => val && Math.min(Math.abs(index - i), _seq.length - index)
@@ -39,7 +47,7 @@ export function getOctaveFromNote(note) {
 }
 
 export function getChromaFromNote(note) {
-  return note.substring(0, note.length - 1);
+  return note && note.substring(0, note.length - 1);
 }
 
 export function getNoteAtIndex({ _seq, index }) {
@@ -86,4 +94,24 @@ export function displayJSON(obj, context) {
       context.translate(0, 14);
     }
   });
+}
+
+// https://en.wikipedia.org/wiki/Fisher%E2%80%93Yates_shuffle
+export function shuffle(array) {
+  const a = [...array];
+
+  let currentIndex = array.length,
+    randomIndex;
+
+  // While there remain elements to shuffle.
+  while (currentIndex > 0) {
+    // Pick a remaining element.
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    // And swap it with the current element.
+    [a[currentIndex], a[randomIndex]] = [a[randomIndex], a[currentIndex]];
+  }
+
+  return a;
 }

@@ -17,6 +17,12 @@ const chroma = [
 const octaves = [2, 3, 4, 5, 6, 7];
 
 export const sequenceFixtures = {
+  firstBeatA3: () => {
+    const _seq = new Array(20).fill(undefined);
+    _seq[0] = { note: "A3", pan: 0 };
+    return _seq;
+  },
+
   allBeatsA3: () => {
     const _seq = [];
 
@@ -81,7 +87,7 @@ export const sequenceFixtures = {
   },
 
   oneAndTen: () => {
-    const _seq = new Array(20);
+    const _seq = new Array(20).fill(undefined);
 
     _seq[0] = {
       note: choose(chroma) + choose(octaves),
