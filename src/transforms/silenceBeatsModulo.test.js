@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { silenceBeatsModulo, initSilenceBeatsModulo } from "./transforms";
+import {
+  silenceBeatsModulo,
+  initSilenceBeatsModulo
+} from "./silenceBeatsModulo";
 import { getActiveBeats } from "../utils";
 import { sequenceFixtures } from "../sequence.fixtures";
 

@@ -17,6 +17,19 @@ const chroma = [
 const octaves = [2, 3, 4, 5, 6, 7];
 
 export const sequenceFixtures = {
+  allBeatsA3: () => {
+    const _seq = [];
+
+    for (let i = 0; i < 20; i++) {
+      _seq.push({
+        note: "A3",
+        pan: 0
+      });
+    }
+
+    return _seq;
+  },
+
   allBeatsChromatic: () => {
     const _seq = [];
 
