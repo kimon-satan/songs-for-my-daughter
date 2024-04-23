@@ -1,9 +1,9 @@
-import { getNoteAtIndex } from "../utils";
 import { getModuloBeat, allChecks } from "./helpers/transform-utils";
 import {
-  pickOctaveDirectional,
   pickPanRandom,
-  pickValueFromPool
+  pickChroma,
+  pickOctave,
+  pickNote
 } from "../pickers/pickers";
 
 /**
@@ -22,7 +22,7 @@ export function initBaseBeatsModulo({ _seq, ...args }) {
   return {
     transform: "baseBeatsModulo",
     pickers: {
-      chroma: "ChromaPoolShallow",
+      chroma: "ChromaPoolDeep",
       octave: "AscendDescend",
       pan: "Random"
     },
@@ -44,30 +44,25 @@ export function baseBeatsModulo({
   shouldProceed = () => true,
   checkComplete = allChecks
 }) {
-  const _transformStateCopy = { ..._transformState };
+  let _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];
   const beat = getModuloBeat({ _seq, _transformState });
 
   if (shouldProceed(_seqCopy[beat])) {
-    const [chroma, chromaPool] = pickValueFromPool(_transformState.chromaPool);
-    _transformStateCopy.chromaPool = chromaPool;
-    const [octave, isAscending] = pickOctaveDirectional({
-      chroma,
-      prevNote: getNoteAtIndex({
-        _seq,
-        index: _transformState.visited.at(-1)
-      }),
-      isAscending: _transformState.isAscending
+    const { note, pan, ...rest } = pickNote({
+      _seq: _seqCopy,
+      _transformState: _transformStateCopy,
+      currIndex: beat
     });
-    _transformStateCopy.isAscending = isAscending;
 
-    if (chroma && octave) {
-      const note = chroma + octave;
+    if (note) {
       _seqCopy[beat] = {
         note,
-        pan: pickPanRandom()
+        pan
       };
     }
+
+    _transformStateCopy = rest._transformState;
   }
 
   _transformStateCopy.visited.push(beat);

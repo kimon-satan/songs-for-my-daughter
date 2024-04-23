@@ -27,7 +27,7 @@ export const OCTAVE_PICKERS = [
 
 export const PAN_PICKERS = ["Random", "PreservePan"];
 
-function pickChroma({ _seq, _transformState, currIndex }) {
+export function pickChroma({ _seq, _transformState, currIndex }) {
   let chroma;
   const _transformStateCopy = { ..._transformState };
 
@@ -54,7 +54,7 @@ function pickChroma({ _seq, _transformState, currIndex }) {
   return { _transformState: _transformStateCopy, chroma };
 }
 
-function pickOctave({ _seq, _transformState, currIndex, currChroma }) {
+export function pickOctave({ _seq, _transformState, currIndex, currChroma }) {
   let octave;
   const _transformStateCopy = { ..._transformState };
   switch (_transformState.pickers.octave) {
@@ -86,7 +86,7 @@ function pickOctave({ _seq, _transformState, currIndex, currChroma }) {
       }
       break;
     case "CopyNeighbour":
-      octave = pickOctaveFromNearest({ _seq, index });
+      octave = pickOctaveFromNearest({ _seq, index: currIndex });
       break;
   }
 
@@ -94,8 +94,28 @@ function pickOctave({ _seq, _transformState, currIndex, currChroma }) {
 }
 
 export function pickNote({ _seq, _transformState, currIndex }) {
-  const chroma = pickChroma({ _seq, _transformState, currIndex });
-  // const octave =
+  const chroma = pickChroma({
+    _seq: _seq,
+    _transformState,
+    currIndex
+  });
+
+  const octave = pickOctave({
+    _seq: _seq,
+    _transformState: chroma._transformState,
+    currIndex,
+    currChroma: chroma.chroma
+  });
+
+  const note =
+    chroma.chroma && octave.octave ? chroma.chroma + octave.octave : null;
+  const pan = note ? pickPanRandom() : null;
+
+  return {
+    note,
+    pan,
+    _transformState: octave._transformState
+  };
 }
 
 export function pickValueFromPool(valuePool, isDeep = true) {
