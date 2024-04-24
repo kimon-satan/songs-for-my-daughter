@@ -14,9 +14,10 @@ https://www.figma.com/file/WxgIthxGLw0mnNocuy4u3T/Songs-For-My-Daughter---transi
 [] Variable methods of note choice
 [x] shallow choose from pool
 [x] nearest beat: copy chroma
-[] nearest beat: copy octave
-[] nearest beat: nearest chroma in pool
+[x] nearest beat: copy octave
 [] current beat: nearest chroma in pool
+[] nearest beat: nearest chroma in pool
+
 [ ] replace preserves panning
 
 [] calculate note pool from a few notes

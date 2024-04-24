@@ -4,9 +4,28 @@ import {
   getChromaAtIndex,
   getFirstActiveBeat,
   getNearestActiveBeat,
-  getOctaveAtIndex
+  getOctaveAtIndex,
+  calculateChromaDistance
 } from "./utils";
 import { sequenceFixtures } from "./sequence.fixtures";
+
+describe("calculateChromaDistance", () => {
+  it.each([
+    ["A", "C", 3],
+    ["C", "A", 3],
+    ["A", "G", 2],
+    ["A", "E", 5],
+    ["E", "A", 5],
+    ["A", "G#", 1],
+    ["G", "G#", 1]
+  ])(
+    "correctly calculates the shortest distance between two chromas",
+    (chromaA, chromaB, expectedVal) => {
+      const d = calculateChromaDistance(chromaA, chromaB);
+      expect(d).toEqual(expectedVal);
+    }
+  );
+});
 
 describe("choose", () => {
   it("returns one of the items in the array", () => {

@@ -1,3 +1,18 @@
+import * as Tone from "tone";
+
+export function calculateChromaDistance(chromaA, chromaB) {
+  const midiA1 = Tone.Frequency(chromaA + "1").toMidi();
+  const midiB1 = Tone.Frequency(chromaB + "1").toMidi();
+  const midiA2 = Tone.Frequency(chromaA + "2").toMidi();
+  const midiB2 = Tone.Frequency(chromaB + "2").toMidi();
+
+  return Math.min(
+    Math.abs(midiA1 - midiB1),
+    Math.abs(midiA1 - midiB2),
+    Math.abs(midiA2 - midiB1)
+  );
+}
+
 export function getFirstActiveBeat(_seq) {
   if (!_seq) return null;
   const b = _seq.findIndex((v) => v !== undefined);

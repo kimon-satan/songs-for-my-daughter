@@ -1,10 +1,5 @@
 import { getModuloBeat, allChecks } from "./helpers/transform-utils";
-import {
-  pickPanRandom,
-  pickChroma,
-  pickOctave,
-  pickNote
-} from "../pickers/pickers";
+import { pickNote } from "../pickers/pickers";
 
 /**
  *
