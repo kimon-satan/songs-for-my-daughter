@@ -9,6 +9,8 @@ https://www.figma.com/file/WxgIthxGLw0mnNocuy4u3T/Songs-For-My-Daughter---transi
 - [x] silenceMultipleBeats
 - [x] replace beats modulo
 
+- [x]finish refactor to allow different pickers for all transforms
+
 [] Variable methods of note choice
 [x] shallow choose from pool
 [x] nearest beat: copy chroma

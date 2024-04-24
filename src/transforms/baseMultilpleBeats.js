@@ -1,10 +1,6 @@
 import { shuffle } from "../utils";
 
-import {
-  pickChromaFromNearest,
-  pickPanRandom,
-  pickValueFromPool
-} from "../pickers/pickers";
+import { pickNote } from "../pickers/pickers";
 
 export function initBaseMultipleBeats({ _seq, beats, maxBeats, ...args }) {
   let _beats = beats ? [...beats] : _seq.map((b, i) => i);
@@ -16,6 +12,11 @@ export function initBaseMultipleBeats({ _seq, beats, maxBeats, ...args }) {
 
   return {
     transform: "baseMultipleBeats",
+    pickers: {
+      chroma: "CopyNeighbour",
+      octave: "CopyNeighbour",
+      pan: "Random"
+    },
     cyclesUntilNextAction: 3,
     isComplete: false,
     beats: _beats, // by default all beats
@@ -28,24 +29,22 @@ export function baseMultipleBeats({
   _seq,
   shouldProceed = () => true
 }) {
-  const _transformStateCopy = { ..._transformState };
+  let _transformStateCopy = { ..._transformState };
   const _seqCopy = [..._seq];
   _transformState.beats.forEach((beat) => {
     if (shouldProceed(_seqCopy[beat])) {
-      const chroma = (() => {
-        if (_transformState.chromaPool) {
-          const [chroma] = pickValueFromPool(_transformState.chromaPool, false);
-          return chroma;
-        }
-        return pickChromaFromNearest({ _seq, index: beat });
-      })();
+      const { note, pan, ...rest } = pickNote({
+        _seq: _seqCopy,
+        _transformState: _transformStateCopy,
+        currIndex: beat
+      });
 
-      const octave = 4;
-      const pan = pickPanRandom();
       _seqCopy[beat] = {
-        note: chroma + octave,
+        note,
         pan
       };
+
+      _transformStateCopy = rest._transformState;
     }
   });
 
