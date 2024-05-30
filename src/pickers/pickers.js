@@ -75,7 +75,11 @@ function pickChroma({ _seq, _transformState, currIndex }) {
       chroma = pickChromaFromNearest({ _seq, index: currIndex });
       break;
     case "ClosestMatch":
-      chroma = "A"; //TBD
+      // TODO needs debugging
+      chroma = pickNearestValue({
+        valuePool: _transformState.chromaPool,
+        chroma: getChromaAtIndex({ _seq, index: currIndex })
+      });
       break;
   }
 
@@ -167,7 +171,7 @@ function pickPanRandom(centroidBias = 1) {
 
 /////////////////////////// UTILS ///////////////////////////
 
-export function pickNearestValue(valuePool, chroma) {
+export function pickNearestValue({ valuePool, chroma }) {
   let smallestDistance = 24;
   let closestChroma = null;
   for (const c of valuePool) {

@@ -39,6 +39,8 @@ export function baseMultipleBeats({
         currIndex: beat
       });
 
+      console.log(note);
+
       _seqCopy[beat] = {
         note,
         pan

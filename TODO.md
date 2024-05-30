@@ -16,6 +16,17 @@ https://www.figma.com/file/WxgIthxGLw0mnNocuy4u3T/Songs-For-My-Daughter---transi
 [x] nearest beat: copy chroma
 [x] nearest beat: copy octave
 [] current beat: nearest chroma in pool
+
+<!-- Needs deubgging
+{
+"pickers": {
+"chroma": "ClosestMatch",
+"octave": "PreserveOctave",
+"pan": "Random"
+},
+"chromaPool": ["A","C","E","G","D"]
+} -->
+
 [] nearest beat: nearest chroma in pool
 
 [ ] replace preserves panning
