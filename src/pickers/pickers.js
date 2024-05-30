@@ -75,7 +75,6 @@ function pickChroma({ _seq, _transformState, currIndex }) {
       chroma = pickChromaFromNearest({ _seq, index: currIndex });
       break;
     case "ClosestMatch":
-      // TODO needs debugging
       chroma = pickNearestValue({
         valuePool: _transformState.chromaPool,
         chroma: getChromaAtIndex({ _seq, index: currIndex })
@@ -105,7 +104,7 @@ function pickOctave({ _seq, _transformState, currIndex, currChroma }) {
       }
       break;
     case "PreserveOctave":
-      octave = getOctaveAtIndex(currIndex);
+      octave = getOctaveAtIndex({ _seq, index: currIndex });
       break;
     case "OctavePoolShallow":
       octave = pickValueFromPool(_transformState.octavePool, false)[0];

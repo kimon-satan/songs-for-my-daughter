@@ -12,6 +12,6 @@ export function replaceMultipleBeats({ _transformState, _seq }) {
   return baseMultipleBeats({
     _seq,
     _transformState,
-    shouldProceed: (beat) => beat !== undefined
+    shouldProceed: (beat) => !!beat
   });
 }

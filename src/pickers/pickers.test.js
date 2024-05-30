@@ -9,7 +9,7 @@ describe("pickNearestValue", () => {
     ["G", "G"]
   ])("finds the nearest value", (chroma, expectedVal) => {
     const notePool = ["A#", "E", "G"];
-    const nearest = pickNearestValue(notePool, chroma);
+    const nearest = pickNearestValue({ valuePool: notePool, chroma });
     expect(nearest).toEqual(expectedVal);
   });
 });
