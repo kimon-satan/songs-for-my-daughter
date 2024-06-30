@@ -1,9 +1,15 @@
+import { getActiveIndexes, choose } from "../utils";
+
 export function initSilenceMultipleBeats({ _seq, ...args }) {
+  const active = getActiveIndexes({ _seq });
+  const remaining = choose(active);
+  const beats = active.filter((i) => i !== remaining);
+
   return {
     transform: "silenceMultipleBeats",
     cyclesUntilNextAction: 3,
     isComplete: false,
-    beats: [1, 3, 5, 7, 9, 11, 13], // this could be algorithmically determined
+    beats, // this could be algorithmically determined
     ...args
   };
 }

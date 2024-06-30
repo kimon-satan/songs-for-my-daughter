@@ -80,6 +80,12 @@ function pickChroma({ _seq, _transformState, currIndex }) {
         chroma: getChromaAtIndex({ _seq, index: currIndex })
       });
       break;
+    case "ClosestMatchNeighbour":
+      chroma = pickNearestValue({
+        valuePool: _transformState.chromaPool,
+        chroma: pickChromaFromNearest({ _seq, index: currIndex })
+      });
+      break;
   }
 
   return { _transformState: _transformStateCopy, chroma };

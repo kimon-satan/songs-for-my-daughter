@@ -16,7 +16,7 @@ https://www.figma.com/file/WxgIthxGLw0mnNocuy4u3T/Songs-For-My-Daughter---transi
 [x] nearest beat: copy chroma
 [x] nearest beat: copy octave
 [x] current beat: nearest chroma in pool
-[] nearest beat: nearest chroma in pool
+[x] nearest beat: nearest chroma in pool
 
 [ ] replace preserves panning
 

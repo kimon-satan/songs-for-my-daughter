@@ -2,6 +2,7 @@ import * as Tone from "tone";
 import { randomArray, choose, displayJSON, safeParseJson } from "./utils";
 import { transforms } from "./transforms/transforms";
 import { getActiveBeats } from "./utils";
+import { chooseTransform } from "./chooseTransform";
 
 import { sequenceFixtures } from "./sequence.fixtures";
 
@@ -208,12 +209,8 @@ function playCurrentNote(note, time) {
 ////////////////////////////////
 
 function getNextTransform({ _transformState, _seq }) {
-  if (!_transformState) {
-    return transforms.activateBeatsModulo.init({ _seq });
-  }
-
-  if (_transformState.isComplete) {
-    return chooseTransform({ _transformState, _seq });
+  if (!_transformState || _transformState.isComplete) {
+    return chooseTransform({ _seq });
   }
 
   return _transformState;
@@ -227,13 +224,5 @@ function applyTransforms({ _transformState, _seq }) {
     });
   } else {
     throw new Error("transform not found");
-  }
-}
-
-function chooseTransform({ _transformState, _seq }) {
-  if (_transformState.transform === "activateBeatsModulo") {
-    return transforms.silenceBeatsModulo.init({ _seq });
-  } else {
-    return transforms.activateBeatsModulo.init({ _seq });
   }
 }
