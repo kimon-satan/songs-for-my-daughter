@@ -33,3 +33,7 @@ export function allChecks({ _transformState, _seq }) {
     _transformState.chromaPool.length === 0
   );
 }
+
+export function seqCheck({ _transformState }) {
+  return _transformState.sequence.length === 0;
+}
