@@ -23,30 +23,31 @@ import {
   initSilenceMultipleBeats,
   silenceMultipleBeats
 } from "./silenceMultipleBeats";
+import { TransformMap } from "../types";
 
-export const transforms = {
+export const transforms: TransformMap = {
   activateBeatsModulo: {
     init: initActivateBeatsModulo,
-    transform: activateBeatsModulo
+    transform: activateBeatsModulo as any
   },
   replaceBeatsModulo: {
     init: initReplaceBeatsModulo,
-    transform: replaceBeatsModulo
+    transform: replaceBeatsModulo as any
   },
   silenceBeatsModulo: {
     init: initSilenceBeatsModulo,
-    transform: silenceBeatsModulo
+    transform: silenceBeatsModulo as any
   },
   activateMultipleBeats: {
     init: initActivateMultipleBeats,
-    transform: activateMultipleBeats
+    transform: activateMultipleBeats as any
   },
   replaceMultipleBeats: {
     init: initReplaceMultipleBeats,
-    transform: replaceMultipleBeats
+    transform: replaceMultipleBeats as any
   },
   silenceMultipleBeats: {
     init: initSilenceMultipleBeats,
-    transform: silenceMultipleBeats
+    transform: silenceMultipleBeats as any
   }
 };

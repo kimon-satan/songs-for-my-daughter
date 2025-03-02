@@ -1,5 +1,10 @@
 import { revistedCheck, maxRepsCheck } from "./helpers/transform-utils";
-import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
+import {
+  baseBeatsModulo,
+  initBaseBeatsModulo,
+  BaseBeatsModuloState
+} from "./baseBeatsModulo";
+import { Sequence } from "../types";
 
 /**
  *
@@ -13,7 +18,10 @@ import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
  *  - maxBeats are activated
  */
 
-export function initReplaceBeatsModulo({ _seq, ...args }) {
+export function initReplaceBeatsModulo({
+  _seq,
+  ...args
+}: { _seq: Sequence } & Partial<BaseBeatsModuloState>): BaseBeatsModuloState {
   const base = initBaseBeatsModulo({ _seq });
 
   return {
@@ -24,14 +32,23 @@ export function initReplaceBeatsModulo({ _seq, ...args }) {
   };
 }
 
-export function replaceBeatsModulo({ _seq, _transformState }) {
+export function replaceBeatsModulo({
+  _seq,
+  _transformState
+}: {
+  _seq: Sequence;
+  _transformState: BaseBeatsModuloState;
+}): {
+  _seq: Sequence;
+  _transformState: BaseBeatsModuloState;
+} {
   return baseBeatsModulo({
     _seq,
     _transformState,
     shouldProceed: (beat) => beat !== undefined,
     checkComplete: ({ _transformState, _seq }) =>
       revistedCheck({ _transformState, _seq }) ||
-      maxRepsCheck({ _transformState, _seq }) ||
+      maxRepsCheck({ _transformState }) ||
       _transformState.chromaPool.length === 0
   });
 }

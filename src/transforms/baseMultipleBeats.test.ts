@@ -48,8 +48,8 @@ describe("baseMultipleBeats", () => {
       _transformState: transformState
     });
 
-    expect(_seq.filter((v) => getChromaFromNote(v?.note) === "B").length).toBe(
-      5
-    );
+    expect(
+      _seq.filter((v) => v?.note && getChromaFromNote(v.note) === "B").length
+    ).toBe(5);
   });
 });

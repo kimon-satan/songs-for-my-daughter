@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
 import { getActiveBeats } from "../utils";
 import { sequenceFixtures } from "../sequence.fixtures";
+import { Note, Sequence } from "../types";
 
 describe("baseBeatsModulo", () => {
   it("it adds a note to an empty sequence", () => {
@@ -33,7 +34,7 @@ describe("baseBeatsModulo", () => {
       });
       seq = _seq;
     }
-    expect(seq.filter((n) => n.note.charAt(0) === "A")).toHaveLength(20);
+    expect(seq.filter((n) => n?.note?.charAt(0) === "A")).toHaveLength(20);
   });
 
   it("it doesn't add more than max beats", () => {
@@ -89,5 +90,28 @@ describe("baseBeatsModulo", () => {
         i === transformState.maxReps - 1
       );
     }
+  });
+
+  it("should activate all beats with A", () => {
+    const seq: Sequence = new Array(20);
+
+    let _transformState = initBaseBeatsModulo({
+      _seq: seq,
+      modulo: 1
+    });
+
+    for (let i = 0; i < 20; i++) {
+      const { _seq, _transformState: newState } = baseBeatsModulo({
+        _seq: seq,
+        _transformState
+      });
+      seq[i] = _seq[i];
+      _transformState = newState;
+    }
+
+    const activeNotes = seq.filter((n): n is Note => n !== undefined);
+    expect(activeNotes.filter((n) => n.note.charAt(0) === "A")).toHaveLength(
+      20
+    );
   });
 });

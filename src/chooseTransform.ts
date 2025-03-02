@@ -1,7 +1,8 @@
 import { transforms } from "./transforms/transforms";
 import { choose, getActiveBeats } from "./utils";
+import { Sequence, TransformState } from "./types";
 
-export function chooseTransform({ _seq }) {
+export function chooseTransform({ _seq }: { _seq: Sequence }): TransformState {
   // choose next transform based on number of beats
   const transform = (() => {
     const numBeats = getActiveBeats(_seq).length;

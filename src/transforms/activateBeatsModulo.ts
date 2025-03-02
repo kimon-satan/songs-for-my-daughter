@@ -1,4 +1,9 @@
-import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
+import {
+  baseBeatsModulo,
+  initBaseBeatsModulo,
+  BaseBeatsModuloState
+} from "./baseBeatsModulo";
+import { Sequence } from "../types";
 
 /**
  *
@@ -12,7 +17,10 @@ import { baseBeatsModulo, initBaseBeatsModulo } from "./baseBeatsModulo";
  *  - maxBeats are activated
  */
 
-export function initActivateBeatsModulo({ _seq, ...args }) {
+export function initActivateBeatsModulo({
+  _seq,
+  ...args
+}: { _seq: Sequence } & Partial<BaseBeatsModuloState>): BaseBeatsModuloState {
   const base = initBaseBeatsModulo({ _seq });
 
   return {
@@ -23,7 +31,16 @@ export function initActivateBeatsModulo({ _seq, ...args }) {
   };
 }
 
-export function activateBeatsModulo({ _seq, _transformState }) {
+export function activateBeatsModulo({
+  _seq,
+  _transformState
+}: {
+  _seq: Sequence;
+  _transformState: BaseBeatsModuloState;
+}): {
+  _seq: Sequence;
+  _transformState: BaseBeatsModuloState;
+} {
   return baseBeatsModulo({
     _seq,
     _transformState,

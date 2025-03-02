@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   activateBeatsModulo,
   initActivateBeatsModulo
 } from "./activateBeatsModulo";
 import { sequenceFixtures } from "../sequence.fixtures";
+import { Note, Sequence } from "../types";
 
 describe("activateBeatsModulo", () => {
   it("it adds a note to an empty sequence", () => {
@@ -36,6 +37,27 @@ describe("activateBeatsModulo", () => {
       seq = _seq;
     }
 
-    expect(seq.filter((n) => n.note === "A3")).toHaveLength(20);
+    expect(seq.filter((n) => n?.note === "A3")).toHaveLength(20);
+  });
+
+  it("should activate all beats with A3", () => {
+    const seq: Sequence = new Array(20);
+
+    let _transformState = initActivateBeatsModulo({
+      _seq: seq,
+      modulo: 1
+    });
+
+    for (let i = 0; i < 20; i++) {
+      const { _seq, _transformState: newState } = activateBeatsModulo({
+        _seq: seq,
+        _transformState
+      });
+      seq[i] = _seq[i];
+      _transformState = newState;
+    }
+
+    const activeNotes = seq.filter((n): n is Note => n !== undefined);
+    expect(activeNotes.filter((n) => n.note === "A3")).toHaveLength(20);
   });
 });

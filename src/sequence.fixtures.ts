@@ -1,6 +1,7 @@
 import { choose } from "./utils";
+import { Note, Sequence, SequenceFixtures } from "./types";
 
-const chroma = [
+const chroma: string[] = [
   "A",
   "A#",
   "B",
@@ -14,17 +15,17 @@ const chroma = [
   "G",
   "G#"
 ];
-const octaves = [2, 3, 4, 5, 6, 7];
+const octaves: number[] = [2, 3, 4, 5, 6, 7];
 
-export const sequenceFixtures = {
-  firstBeatA3: () => {
-    const _seq = new Array(20).fill(undefined);
+export const sequenceFixtures: SequenceFixtures = {
+  firstBeatA3: (): Sequence => {
+    const _seq: Sequence = new Array(20).fill(undefined);
     _seq[0] = { note: "A3", pan: 0 };
     return _seq;
   },
 
-  allBeatsA3: () => {
-    const _seq = [];
+  allBeatsA3: (): Sequence => {
+    const _seq: Note[] = [];
 
     for (let i = 0; i < 20; i++) {
       _seq.push({
@@ -36,8 +37,8 @@ export const sequenceFixtures = {
     return _seq;
   },
 
-  allBeatsChromatic: () => {
-    const _seq = [];
+  allBeatsChromatic: (): Sequence => {
+    const _seq: Note[] = [];
 
     for (let i = 0; i < 20; i++) {
       _seq.push({
@@ -50,8 +51,8 @@ export const sequenceFixtures = {
     return _seq;
   },
 
-  alternateBeatsRandom: () => {
-    const _seq = new Array(20);
+  alternateBeatsRandom: (): Sequence => {
+    const _seq: Sequence = new Array(20);
 
     for (let i = 0; i < 20; i += 2) {
       _seq[i] = {
@@ -62,8 +63,8 @@ export const sequenceFixtures = {
     return _seq;
   },
 
-  aFewHighBeats: () => {
-    const _seq = new Array(20);
+  aFewHighBeats: (): Sequence => {
+    const _seq: Sequence = new Array(20);
 
     for (let i = 0; i < 3; i++) {
       _seq[i * 6] = {
@@ -74,8 +75,8 @@ export const sequenceFixtures = {
     return _seq;
   },
 
-  aFewBeatsWithOffset: () => {
-    const _seq = new Array(20);
+  aFewBeatsWithOffset: (): Sequence => {
+    const _seq: Sequence = new Array(20);
 
     for (let i = 0; i < 3; i++) {
       _seq[2 + i * 6] = {
@@ -86,8 +87,8 @@ export const sequenceFixtures = {
     return _seq;
   },
 
-  oneAndTen: () => {
-    const _seq = new Array(20).fill(undefined);
+  oneAndTen: (): Sequence => {
+    const _seq: Sequence = new Array(20).fill(undefined);
 
     _seq[0] = {
       note: choose(chroma) + choose(octaves),

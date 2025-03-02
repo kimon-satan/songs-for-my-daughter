@@ -1,5 +1,15 @@
 import { getActiveBeats } from "../utils";
 import { getModuloBeat } from "./helpers/transform-utils";
+import { Sequence, TransformState } from "../types";
+
+interface SilenceBeatsModuloState extends TransformState {
+  visited: number[];
+  modulo: number;
+  cyclesUntilNextAction: number;
+  minBeats: number;
+  maxReps: number;
+  isComplete: boolean;
+}
 
 /**
  *
@@ -12,7 +22,12 @@ import { getModuloBeat } from "./helpers/transform-utils";
  *  - minBeats are activated in the sequence
  */
 
-export function initSilenceBeatsModulo({ _seq, ...args }) {
+export function initSilenceBeatsModulo({
+  _seq,
+  ...args
+}: {
+  _seq: Sequence;
+} & Partial<SilenceBeatsModuloState>): SilenceBeatsModuloState {
   return {
     transform: "silenceBeatsModulo",
     visited: [],
@@ -25,9 +40,18 @@ export function initSilenceBeatsModulo({ _seq, ...args }) {
   };
 }
 
-export function silenceBeatsModulo({ _transformState, _seq }) {
-  let _transformStateCopy = { ..._transformState };
-  let _seqCopy = [..._seq];
+export function silenceBeatsModulo({
+  _transformState,
+  _seq
+}: {
+  _transformState: SilenceBeatsModuloState;
+  _seq: Sequence;
+}): {
+  _transformState: SilenceBeatsModuloState;
+  _seq: Sequence;
+} {
+  const _transformStateCopy: SilenceBeatsModuloState = { ..._transformState };
+  const _seqCopy: Sequence = [..._seq];
 
   const beat = getModuloBeat({ _seq, _transformState });
   _seqCopy[beat] = undefined;

@@ -1,9 +1,10 @@
-import { describe, expect, it } from "vitest";
+import { describe, it, expect } from "vitest";
 import {
   replaceBeatsModulo,
   initReplaceBeatsModulo
 } from "./replaceBeatsModulo";
 import { sequenceFixtures } from "../sequence.fixtures";
+import { Note, Sequence } from "../types";
 
 describe("replaceBeatsModulo", () => {
   it("it doesn't add a note to an empty sequence", () => {
@@ -59,5 +60,46 @@ describe("replaceBeatsModulo", () => {
     }
 
     expect(transformState.isComplete).toEqual(false);
+  });
+
+  it("should replace all beats with non-A3", () => {
+    const seq: Sequence = new Array(20).fill({ note: "A3", pan: 0 });
+
+    let _transformState = initReplaceBeatsModulo({
+      _seq: seq,
+      modulo: 1
+    });
+
+    for (let i = 0; i < 20; i++) {
+      const { _seq, _transformState: newState } = replaceBeatsModulo({
+        _seq: seq,
+        _transformState
+      });
+      seq[i] = _seq[i];
+      _transformState = newState;
+    }
+
+    const activeNotes = seq.filter((n): n is Note => n !== undefined);
+    expect(activeNotes.filter((n) => n.note !== "A3")).toHaveLength(20);
+  });
+
+  it("should replace all beats with non-A3 (using optional chaining)", () => {
+    const seq: Sequence = new Array(20).fill({ note: "A3", pan: 0 });
+
+    let _transformState = initReplaceBeatsModulo({
+      _seq: seq,
+      modulo: 1
+    });
+
+    for (let i = 0; i < 20; i++) {
+      const { _seq, _transformState: newState } = replaceBeatsModulo({
+        _seq: seq,
+        _transformState
+      });
+      seq[i] = _seq[i];
+      _transformState = newState;
+    }
+
+    expect(seq.filter((n) => n?.note !== "A3")).toHaveLength(20);
   });
 });

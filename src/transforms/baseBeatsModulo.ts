@@ -1,5 +1,30 @@
 import { getModuloBeat, allChecks } from "./helpers/transform-utils";
 import { pickNote } from "../pickers/pickers";
+import { Note, Sequence, TransformState } from "../types";
+
+export interface BaseBeatsModuloState extends TransformState {
+  pickers: {
+    chroma: string;
+    octave: string;
+    pan: string;
+  };
+  chromaPool: string[];
+  visited: number[];
+  cyclesUntilNextAction: number;
+  isAscending: boolean;
+  isComplete: boolean;
+  modulo: number;
+  maxBeats: number;
+  maxReps: number;
+}
+
+interface ShouldProceedFn {
+  (note: Note | undefined): boolean;
+}
+
+interface CheckCompleteFn {
+  (args: { _transformState: BaseBeatsModuloState; _seq: Sequence }): boolean;
+}
 
 /**
  *
@@ -13,7 +38,10 @@ import { pickNote } from "../pickers/pickers";
  *  - maxBeats are activated / replaced
  */
 
-export function initBaseBeatsModulo({ _seq, ...args }) {
+export function initBaseBeatsModulo({
+  _seq,
+  ...args
+}: { _seq: Sequence } & Partial<BaseBeatsModuloState>): BaseBeatsModuloState {
   return {
     transform: "baseBeatsModulo",
     pickers: {
@@ -38,9 +66,17 @@ export function baseBeatsModulo({
   _transformState,
   shouldProceed = () => true,
   checkComplete = allChecks
-}) {
-  let _transformStateCopy = { ..._transformState };
-  const _seqCopy = [..._seq];
+}: {
+  _seq: Sequence;
+  _transformState: BaseBeatsModuloState;
+  shouldProceed?: ShouldProceedFn;
+  checkComplete?: CheckCompleteFn;
+}): {
+  _transformState: BaseBeatsModuloState;
+  _seq: Sequence;
+} {
+  let _transformStateCopy: BaseBeatsModuloState = { ..._transformState };
+  const _seqCopy: Sequence = [..._seq];
   const beat = getModuloBeat({ _seq, _transformState });
 
   if (shouldProceed(_seqCopy[beat])) {
@@ -53,11 +89,11 @@ export function baseBeatsModulo({
     if (note) {
       _seqCopy[beat] = {
         note,
-        pan
+        pan: pan ?? 0
       };
     }
 
-    _transformStateCopy = rest._transformState;
+    _transformStateCopy = rest._transformState as BaseBeatsModuloState;
   }
 
   _transformStateCopy.visited.push(beat);
